@@ -1,0 +1,6 @@
+node_modules
+heroku.yml
+src/tests
+.env
+.git
+README.md
