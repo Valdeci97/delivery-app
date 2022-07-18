@@ -9,7 +9,7 @@
   "scripts": {
     "pm2": "./node_modules/.bin/pm2",
     "jest": "./node_modules/.bin/jest",
-    "start": "node backend/src/api/server.js",
+    "start": "node back-end/src/api/server.js",
     "stop": "(pm2 stop all && pm2 delete all) | grep 'PM2'",
     "dev": "./scripts/prepare-for-dev.sh",
     "db:reset": "./scripts/reset-db-dev.sh",
