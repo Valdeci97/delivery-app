@@ -2,7 +2,7 @@ FROM node:16-alpine
 
 RUN apk add --no-cache bash
 
-WORKDIR /home/node/app/back-end
+WORKDIR /home/node/app
 
 COPY package*.json ./
 
