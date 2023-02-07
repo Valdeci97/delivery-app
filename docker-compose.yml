@@ -2,14 +2,22 @@ version: '3.9'
 
 services:
   db:
-    image: mysql
+    image: mysql:8.0.32
     container_name: delivery_app_database
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
       - 3306:3306
+    env_file:
+      - ./.env
     environment:
-      - MYSQL_ROOT_PASSWORD=docker
-      - MYSQL_DATABASE=deliveryapp
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
     volumes:
       - ./my-db:/var/lib/mysql
+  adminer:
+    image: adminer:4.8.1-standalone
+    container_name: database_connector
+    restart: always
+    ports:
+      - 8080:8080
