@@ -4,10 +4,14 @@ RUN apk add --no-cache bash
 
 WORKDIR /home/node/app
 
-COPY package.json ./
+RUN chown -R node:node /home/node/app
+
+COPY --chown=node:node package.json ./
 
 RUN npm install
 
-COPY . .
+COPY --chown=node:node . .
 
-RUN npm start
+USER node
+
+ENTRYPOINT [ "npm", "start" ]
