@@ -2,6 +2,12 @@ const { emailSchema, passwordSchema, nameSchema } = require('../utils/joiSchemas
 const { getUserByParam } = require('../services/user');
 const { verifyToken } = require('../utils/jwt');
 
+const getToken = (auth) => {
+  if (!auth) return '';
+  const [, token] = auth.split(' ');
+  return token;
+};
+
 const emailMiddleware = (req, res, next) => {
   const { email } = req.body;
   const { error } = emailSchema.validate({ email });
@@ -33,8 +39,8 @@ const nameMiddleware = (req, res, next) => {
 };
 
 const getUser = async (req, res, next) => {
-  const { authorization } = req.headers;
-  const token = verifyToken(authorization);
+  const auth = getToken(req.headers.authorization);
+  const token = verifyToken(auth);
   if (token.message) return res.status(401).json({ message: token.message });
   const user = await getUserByParam(token.email, 'email');
   if (!user) return res.status(404).json({ message: 'User does not exist' });
@@ -43,24 +49,24 @@ const getUser = async (req, res, next) => {
 };
 
 const authMiddleware = (req, res, next) => {
-  const { authorization } = req.headers;
-  const verify = verifyToken(authorization);
+  const auth = getToken(req.headers.authorization);
+  const verify = verifyToken(auth);
   if (verify.message) return res.status(401).json({ message: verify.message });
   if (verify.role !== 'administrator') return res.status(403).json({ message: 'Access denied' });
   next();
 };
 
 const getEmailFromToken = (req, res, next) => {
-  const { authorization } = req.headers;
-  const token = verifyToken(authorization);
+  const auth = getToken(req.headers.authorization);
+  const token = verifyToken(auth);
   if (token.message) return res.status(401).json({ message: token.message });
   req.body = { email: token.email };
   next();
 };
 
 const validateToken = (req, res, next) => {
-  const { authorization } = req.headers;
-  const token = verifyToken(authorization);
+  const auth = getToken(req.headers.authorization);
+  const token = verifyToken(auth);
   if (token.message) return res.status(401).json({ message: token.message });
   next();
 };

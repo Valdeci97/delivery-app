@@ -34,6 +34,7 @@ describe('Test POST /sales endpoint', () => {
     it('Should return http status 201 and object', async () => {
       res = await chai.request(app).post(SALES_ROUTE)
         .send(validSale).set({ authorization: token });
+      console.log(res);
       expect(res.status).to.be.equal(201);
       expect(res.body).to.be.an('object').to.include.all.keys(['id', 'products']);
       expect(res.body.products).to.be.an('array');

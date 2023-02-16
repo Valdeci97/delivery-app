@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const loginRouter = require('../routes/login');
 const registerRouter = require('../routes/register');
@@ -9,10 +10,13 @@ const salesRouter = require('../routes/sales');
 const { orderRouter, sellerOrderRouter } = require('../routes/orders');
 const sellerRouter = require('../routes/seller');
 const errorMidleware = require('../middlewares/error');
+const limiter = require('../middlewares/limiter');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+app.use(limiter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/customer/products', productsRouter);
