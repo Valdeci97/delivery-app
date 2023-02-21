@@ -1,6 +1,6 @@
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRGVsaXZlcnkgQXBwIEFkbWluIiwiZW1haWwiOiJhZG1AZGVsaXZlcnlhcHAuY29tIiwicm9sZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2NTgxMDkyNzV9.72eJCsiZvA7ac1x1kj2T9fspjNM2u_ri5sOggvXrMlM';
+const token = 'valido administrator/adm@deliveryapp.com-1';
 
-const notAdminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQ2xpZW50ZSBaw6kgQmlyaXRhIiwiZW1haWwiOiJ6ZWJpcml0YUBlbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NTgxMDkxODR9.uJicgkqmyKcA3R0hEv-9iZtgezssf42DRE8L3E5Qw2A';
+const notAdminToken = 'valido seller/fulana@deliveryapp.com-2';
 
 const users = [
 	{

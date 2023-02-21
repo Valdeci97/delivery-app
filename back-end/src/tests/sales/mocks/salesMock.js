@@ -8,7 +8,7 @@ const createdSale = {
 	]
 };
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQ2xpZW50ZSBaw6kgQmlyaXRhIiwiZW1haWwiOiJ6ZWJpcml0YUBlbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NTgxMDkxODR9.uJicgkqmyKcA3R0hEv-9iZtgezssf42DRE8L3E5Qw2A';
+const token = 'valido customer/zebirita@email.com-3';
 
 const validSale = {
 	"totalPrice": 89.07,

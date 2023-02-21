@@ -2,8 +2,11 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
 
-const { Sale, User } = require('../../database/models');
-const app = require('../../api/app');
+const { Sale } = require('../../database/models');
+
+const SalesService = require('../../services/sales');
+const User = require('../../services/user');
+const app = require('../serverMock');
 const { validUser, validSeller } = require('../users/mocks/loginMocks');
 const {
   orders,
@@ -12,6 +15,9 @@ const {
   sellerToken,
   sellerOrderById,
   userIdConflictOrder,
+  startedOrder,
+  leavingOrder,
+  deliveredOrder,
 } = require('./mocks/ordersMock');
 const { userDbResponse, sellerDbResponse } = require('../users/mocks/loginMocks');
 
@@ -22,19 +28,17 @@ describe('Test GET /customer/orders endpoint', () => {
   let res;
   describe('List all orders from an user', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(userDbResponse);
-      sinon.stub(Sale, 'findAll').resolves(orders);
+      sinon.stub(User, 'getUserByParam').resolves(userDbResponse);
+      sinon.stub(SalesService, 'getUserSales').resolves(orders);
     });
     after(() => {
-      (User.findOne).restore();
-      (Sale.findAll).restore();
+      (User.getUserByParam).restore();
+      (SalesService.getUserSales).restore();
     });
 
     it('Should http status 200 and an array', async () => {
-      const { body: { token } } = await chai.request(app).post('/login')
-        .send(validUser);
       res = await chai.request(app)
-        .get('/customer/orders').set({ authorization: token });
+        .get('/customer/orders').set({ authorization: userToken });
       expect(res.status).to.be.equal(200);
       expect(res.body).to.be.an('array').to.have.length(3);
       expect(res.body[0]).to.include.all.keys([
@@ -52,20 +56,18 @@ describe('Test GET /customer/orders endpoint', () => {
 
   describe('List a specific order using the id param', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(userDbResponse);
-      sinon.stub(Sale, 'findOne').resolves(userOrderById);
+      sinon.stub(User, 'getUserByParam').resolves(userDbResponse);
+      sinon.stub(SalesService, 'getUserSalesById').resolves(userOrderById);
     });
 
     after(() => {
-      (User.findOne).restore();
-      (Sale.findOne).restore();
+      (User.getUserByParam).restore();
+      (SalesService.getUserSalesById).restore();
     });
 
     it('Should return hhtp status 200 and an object', async () => {
-      const { body: { token } } = await chai.request(app).post('/login')
-        .send(validUser);
       res = await chai.request(app).get('/customer/orders/1')
-        .set({ authorization: token });
+        .set({ authorization: userToken });
       expect(res.status).to.be.equal(200);
       expect(res.body).to.be.an('object').to.have.own.property('status');
     });
@@ -73,20 +75,15 @@ describe('Test GET /customer/orders endpoint', () => {
 
   describe('Test role conflict case', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(sellerDbResponse);
-      sinon.stub(Sale, 'findOne').resolves(userIdConflictOrder);
+      sinon.stub(SalesService, 'getUserSalesById').throwsException(new Error());
     });
 
     after(() => {
-      (User.findOne).restore();
-      (Sale.findOne).restore();
+      (SalesService.getUserSalesById).restore();
     });
 
     it('Should return http status 403', async () => {
-      const { body: { token } } = await chai.request(app).post('/login')
-        .send(validSeller);
-
-      res = await chai.request(app).get('/customer/orders/1').set({ authorization: token });
+      res = await chai.request(app).get('/customer/orders/1').set({ authorization: sellerToken });
       expect(res.status).to.be.equal(403);
       expect(res.body).to.be.an('object').to.have.own.property('message');
       expect(res.body.message).to.be.equal('Access denied');
@@ -98,13 +95,13 @@ describe('Test GET /seller/orders endpoint', () => {
   let res;
   describe('List all orders from a seller', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(sellerDbResponse);
-      sinon.stub(Sale, 'findAll').resolves(orders);
+      sinon.stub(User, 'getUserByParam').resolves(sellerDbResponse);
+      sinon.stub(SalesService, 'getSellerSales').resolves(orders);
     });
 
     after(() => {
-      (User.findOne).restore();
-      (Sale.findAll).restore();
+      (User.getUserByParam).restore();
+      (SalesService.getSellerSales).restore();
     });
 
     it('Should return http status 200 and an array', async () => {
@@ -127,12 +124,12 @@ describe('Test GET /seller/orders endpoint', () => {
 
   describe('List a specific order using the id param', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(sellerDbResponse);
-      sinon.stub(Sale, 'findOne').resolves(sellerOrderById);
+      sinon.stub(User, 'getUserByParam').resolves(sellerDbResponse);
+      sinon.stub(SalesService, 'getSellerSalesById').resolves(sellerOrderById);
     });
     after(() => {
-      (User.findOne).restore();
-      (Sale.findOne).restore();
+      (User.getUserByParam).restore();
+      (SalesService.getSellerSalesById).restore();
     });
 
     it('Should return http status 200 and an object', async () => {
@@ -145,13 +142,11 @@ describe('Test GET /seller/orders endpoint', () => {
 
   describe('Token with role equal customer try to list all seller orders', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(userDbResponse);
-      sinon.stub(Sale, 'findAll').resolves(orders);
+      sinon.stub(SalesService, 'getSellerSales').throwsException(new Error());
     });
 
     after(() => {
-      (User.findOne).restore();
-      (Sale.findAll).restore();
+      (SalesService.getSellerSales).restore();
     });
 
     it('Should return http status 403', async () => {
@@ -164,13 +159,11 @@ describe('Test GET /seller/orders endpoint', () => {
 
   describe('Token with role equal customer try to list a specifc seller order', () => {
     before(async () => {
-      sinon.stub(User, 'findOne').resolves(userDbResponse);
-      sinon.stub(Sale, 'findAll').resolves(orders);
+      sinon.stub(SalesService, 'getSellerSalesById').throwsException(new Error());
     });
 
     after(() => {
-      (User.findOne).restore();
-      (Sale.findAll).restore();
+      (SalesService.getSellerSalesById).restore();
     });
 
     it('Should return http status 403', async () => {
@@ -194,7 +187,7 @@ describe('Test PATCH order routes', () => {
   });
 
   describe('Update status sale property at start route', () => {
-    before(async () => { sinon.stub(Sale, 'update').resolves(1); });
+    before(async () => { sinon.stub(Sale, 'update').resolves(startedOrder); });
     after(() => { (Sale.update).restore() });
 
     it('Should return http status 204', async () => {
@@ -205,7 +198,7 @@ describe('Test PATCH order routes', () => {
   });
 
   describe('Does not update status sale property at start route', () => {
-    before(async () => { sinon.stub(Sale, 'update').resolves(0); });
+    before(async () => { sinon.stub(Sale, 'update').resolves(undefined); });
     after(() => { (Sale.update).restore() });
 
     it('Should return http status 404', async () => {
@@ -233,7 +226,7 @@ describe('Test PATCH order routes', () => {
   });
 
   describe('Update status sale property at /seller/orders/leave/:id route', () => {
-    before(async () => { sinon.stub(Sale, 'update').resolves(1); });
+    before(async () => { sinon.stub(Sale, 'update').resolves(leavingOrder); });
     after(() => { (Sale.update).restore() });
 
     it('Should return http status 204', async () => {
@@ -244,7 +237,7 @@ describe('Test PATCH order routes', () => {
   });
 
   describe('Does not update status sale property at leave route', () => {
-    before(async () => { sinon.stub(Sale, 'update').resolves(0); });
+    before(async () => { sinon.stub(Sale, 'update').resolves(undefined); });
     after(() => { (Sale.update).restore() });
 
     it('Should return http status 404', async () => {
@@ -272,7 +265,7 @@ describe('Test PATCH order routes', () => {
   });
 
   describe('Update status sale property at /seller/orders/delivered/:id route', () => {
-    before(async () => { sinon.stub(Sale, 'update').resolves(1); });
+    before(async () => { sinon.stub(Sale, 'update').resolves(deliveredOrder); });
     after(() => { (Sale.update).restore() });
 
     it('Should return http status 204', async () => {
@@ -283,7 +276,7 @@ describe('Test PATCH order routes', () => {
   });
 
   describe('Does not update status sale property at delivered route', () => {
-    before(async () => { sinon.stub(Sale, 'update').resolves(0); });
+    before(async () => { sinon.stub(Sale, 'update').resolves(undefined); });
     after(() => { (Sale.update).restore() });
 
     it('Should return http status 404', async () => {

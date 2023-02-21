@@ -64,9 +64,42 @@ const userIdConflictOrder = {
 	"sellerId": 2
 }
 
-const userToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQ2xpZW50ZSBaw6kgQmlyaXRhIiwiZW1haWwiOiJ6ZWJpcml0YUBlbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NTQ2MzM1NDcsImV4cCI6MTY1NDcxOTk0N30.of4ZlCTkz9lONxQ-Vqtr7c5tGTH-XSmETuFyxNe1Qpg';
+const userToken = 'valido customer/zebirita@email.com-3';
 
-const sellerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRnVsYW5hIFBlcmVpcmEiLCJlbWFpbCI6ImZ1bGFuYUBkZWxpdmVyeWFwcC5jb20iLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNjU4MTA5MDI5fQ.vf78ZfFFLTkq5uw4fzO-zP0byyO_K00e71GZs918L1c';
+const sellerToken = 'valido seller/fulana@deliveryapp.com-2';
+
+const startedOrder = {
+	"id": 1,
+	"totalPrice": "89.07",
+	"deliveryAddress": "Rua dos testes",
+	"deliveryNumber": "1305",
+	"saleDate": "2022-06-07T20:26:18.000Z",
+	"status": "Preparando",
+	"userId": 3,
+	"sellerId": 2
+};
+
+const leavingOrder = {
+	"id": 1,
+	"totalPrice": "89.07",
+	"deliveryAddress": "Rua dos testes",
+	"deliveryNumber": "1305",
+	"saleDate": "2022-06-07T20:26:18.000Z",
+	"status": "Em Trânsito",
+	"userId": 3,
+	"sellerId": 2
+}
+
+const deliveredOrder = {
+	"id": 1,
+	"totalPrice": "89.07",
+	"deliveryAddress": "Rua dos testes",
+	"deliveryNumber": "1305",
+	"saleDate": "2022-06-07T20:26:18.000Z",
+	"status": "Entregue",
+	"userId": 3,
+	"sellerId": 2
+}
 
 module.exports = {
   orders,
@@ -75,4 +108,7 @@ module.exports = {
   sellerToken,
   sellerOrderById,
   userIdConflictOrder,
+  startedOrder,
+  leavingOrder,
+  deliveredOrder,
 };

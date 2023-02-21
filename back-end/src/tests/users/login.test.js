@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 const sinon = require('sinon');
 
 const { User } = require('../../database/models');
-const app = require('../../api/app');
+const app = require('../serverMock');
 const {
   validUser,
   userDbResponse,
@@ -21,7 +21,7 @@ describe('Test POST /login endpoint', () => {
     before(async () => { sinon.stub(User, 'findOne').resolves(userDbResponse) });
     after(() => (User.findOne).restore());
     it('Should return http status 200 and an object with token property', async () => {
-    res = await chai.request(app).post('/login').send(validUser);
+      res = await chai.request(app).post('/login').send(validUser);
       expect(res.status).to.be.equal(200);
       expect(res.body).to.be.an('object');
       expect(res.body).to.have.own.property('user');

@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 const sinon = require('sinon');
 
 const { User } = require('../../database/models');
-const app = require('../../api/app');
+const app = require('../serverMock');
 const sellersUsers = require('./mocks/sellersUsers');
 
 chai.use(chaiHttp);
