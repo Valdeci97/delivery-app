@@ -6,6 +6,7 @@
     "version": "1.0.0"
   },
   "servers": [
+    { "url": "https://app--delivery-api--cwcj6y6yvsp6.code.run", "description": "Deploy" },
     { "url": "http://localhost:3001", "description": "API local" }
   ],
   "paths": {
@@ -54,7 +55,7 @@
             "description": "Login com informações incorretas",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
                 "examples": {
                   "incorrectEmailOrPassword": {
                     "value": {
