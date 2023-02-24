@@ -1,0 +1,956 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Delivery-app-API",
+    "description": "Essa API todo como finalidade o gerenciamento de pequeno delivery de bebidas, gerenciando pedidos de consumidores e vendedores.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:3001", "description": "API local" }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "Autenticação cliente",
+        "description": "Essa rota autentica uma pessoa usuária",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Login" },
+              "examples": {
+                "customer": {
+                  "value": {
+                    "email": "dostestes.joao@email.com",
+                    "password": "#minhasenha@"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login efetuado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" },
+                "examples": {
+                  "authenticatedUser": {
+                    "value": {
+                      "user": {
+                        "name": "João dos Testes",
+                        "email": "dostestes.joao@email.com",
+                        "role": "customer"
+                      },
+                      "token": "token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Login com informações incorretas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "examples": {
+                  "incorrectEmailOrPassword": {
+                    "value": {
+                      "message": "Incorrect e-mail or password"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pessoa usuária não cadastrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "userDoesNotExist": {
+                    "value": {
+                      "message": "User does not exist"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "summary": "Criação cliente",
+        "description": "Essa rota cria uma nova pessoa usuária cliente com o role de customer",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/User" },
+              "examples": {
+                "create": {
+                  "value": {
+                    "name": "João dos Testes",
+                    "email": "dostestes.joao@email.com",
+                    "password": "#minhasenha@"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pessoa usuária criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" },
+                "examples": {
+                  "createdUser": {
+                    "value": {
+                      "name": "João dos Testes",
+                      "email": "dostestes.joao@email.com",
+                      "role": "customer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Já existe pessoa usuária cadastrada com o e-mail fornecido",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "conflict": {
+                    "value": {
+                      "message": "User already exists"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/products": {
+      "get": {
+        "summary": "Produtos",
+        "description": "Essa rota retorna todos os produtos disponíveis",
+        "tags": ["Customers"],
+        "responses": {
+          "200": {
+            "description": "Envia informações de todos os produtos cadastrados",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" },
+                "examples": {
+                  "products": {
+                    "value": [{
+                      "id": 1,
+                      "name": "Skol Lata 250ml",
+                      "price": "2.20",
+                      "urlImage": "http://localhost:3001/images/skol_lata_350ml.jpg"
+                    }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/manage": {
+      "get": {
+        "summary": "Gerencia todas as pessoas usuárias",
+        "description": "Essa rota retorna todas as pessoas usuárias cadastradas",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Todas as pessoas usuárias cadastradas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" },
+                "examples": {
+                  "users": {
+                    "value": [{
+                      "id": 2,
+                      "name": "Fulana Pereira",
+                      "email": "fulana@deliveryapp.com",
+                      "role": "seller"
+                    },
+                    {
+                      "id": 3,
+                      "name": "Cliente Zé Birita",
+                      "email": "zebirita@email.com",
+                      "role": "customer"
+                    }]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido ou pessoa usuária não autenticada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Nível de acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criação de novas pessoas usuárias",
+        "description": "Essa rota permite a criação de novas pessoas usuárias, sejam clientes, sejam vendedores; permite também a criação de novas pessoas administradoras.",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/User" },
+              "examples": {
+                "createSeller": {
+                  "value": {
+                    "name": "João das couves",
+                    "email": "vendedor.joao@email.com",
+                    "password": "$vendedor$",
+                    "role": "seller"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pessoa usuária criada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "createdSeller": {
+                    "value": {
+                      "message": "User created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido ou pessoa usuária não autenticada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pessoa usuária já existe",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "conflict": {
+                    "value": {
+                      "message": "User already exists"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/manage/:id": {
+      "delete": {
+        "summary": "Exclui uma pessoa usuária",
+        "description": "Essa rota permite a exclusão de pessoas usuárias, sejam clientes, sejam vendedores; permite também a exclusão de pessoas administradoras.",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "User id",
+          "required": true
+        }],
+        "responses": {
+          "204": { "description": "No content" },
+          "401": {
+            "description": "Token inválido ou pessoa usuária não autenticada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pessoa usuária não cadastrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "notFound": {
+                    "value": {
+                      "message": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sales": {
+      "post": {
+        "summary": "Criação de venda",
+        "description": "Essa rota gera uma venda feita por uma pessoa cliente",
+        "tags": ["Sales"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Sale" },
+              "examples": {
+                "createdSale": {
+                  "value": {
+                    "totalPrice": 11.00,
+                    "deliveryAddress": "Rua dos alfeneiros",
+                    "deliveryNumber": "4",
+                    "sellerId": 2,
+                    "products": [{
+                      "quantity": 5,
+                      "id": 1
+                    }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Venda criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SaleResponse" },
+                "examples": {
+                  "created": {
+                    "value": {
+                      "id": 1,
+                      "products": [{
+                        "quantity": 5,
+                        "id": 1
+                      }]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/orders": {
+      "get": {
+        "summary": "Lista pedidos",
+        "description": "Essa rota lista todos os pedidos de uma pessoa cliente",
+        "tags": ["Customers"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista com todos os pedidos",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" },
+                "examples": {
+                  "orders": {
+                    "value": [{
+                      "id": 1,
+                      "totalPrice": "11.00",
+                      "deliveryAddress": "Rua dos alfeneiros",
+                      "deliveryNumber": "4",
+                      "saleDate": "2023-02-23T20:08:21.000Z",
+                      "status": "Pendente",
+                      "userId": 3,
+                      "sellerId": 2,
+                      "products": [
+                        {
+                          "id": 1,
+                          "name": "Skol Lata 250ml",
+                          "price": "2.20",
+                          "urlImage": "http://localhost:3001/images/skol_lata_350ml.jpg",
+                          "SaleProduct": {
+                            "quantity": 5
+                          }
+                        }
+                      ]
+                    }]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "summary": "Token inválido",
+            "description": "Pessoa usuária não autenticada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/orders/:id": {
+      "get": {
+        "summary": "Lista um pedido",
+        "description": "Essa rota retorna as informações de um pedido específico com base em seu id",
+        "tags": ["Customers"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Order id",
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "summary": "Pedido existe",
+            "description": "Informações do pedido",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" },
+                "examples": {
+                  "order": {
+                    "value": {
+                      "id": 1,
+                      "totalPrice": "11.00",
+                      "deliveryAddress": "Rua dos alfeneiros",
+                      "deliveryNumber": "4",
+                      "saleDate": "2023-02-23T20:08:21.000Z",
+                      "status": "Pendente",
+                      "userId": 3,
+                      "sellerId": 2,
+                      "products": [
+                        {
+                          "id": 1,
+                          "name": "Skol Lata 250ml",
+                          "price": "2.20",
+                          "urlImage": "http://localhost:3001/images/skol_lata_350ml.jpg",
+                          "SaleProduct": {
+                            "quantity": 5
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não existe pedido com o id informado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "orderNotFound": {
+                    "value": {
+                      "message": "Order not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seller/orders": {
+      "get": {
+        "summary":"Lista pedidos",
+        "description": "Essa rota lista todos os pedidos de uma pessoa vendedora",
+        "tags": ["Sellers"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista com todos os pedidos de um vendedor",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SellerOrder" },
+                "examples": {
+                  "orders": {
+                    "value": [{          
+                      "id": 1,
+                      "totalPrice": "11.00",
+                      "deliveryAddress": "Rua dos alfeneiros",
+                      "deliveryNumber": "4",
+                      "saleDate": "2023-02-23T20:08:21.000Z",
+                      "status": "Pendente",
+                      "userId": 3,
+                      "sellerId": 2
+                    }]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não existe pedido com o id informado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "orderNotFound": {
+                    "value": {
+                      "message": "Order not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seller/orders/:id": {
+      "get": {
+        "summary": "Lista um pedido",
+        "description": "Essa rota retorna as informações de um pedido específico com base em seu id",
+        "tags": ["Sellers"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Order id",
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "summary": "Pedido existe",
+            "description": "Informações do pedido",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" },
+                "examples": {
+                  "order": {
+                    "value": {
+                      "id": 1,
+                      "totalPrice": "11.00",
+                      "deliveryAddress": "Rua dos alfeneiros",
+                      "deliveryNumber": "4",
+                      "saleDate": "2023-02-23T20:08:21.000Z",
+                      "status": "Pendente",
+                      "userId": 3,
+                      "sellerId": 2,
+                      "products": [
+                        {
+                          "id": 1,
+                          "name": "Skol Lata 250ml",
+                          "price": "2.20",
+                          "urlImage": "http://localhost:3001/images/skol_lata_350ml.jpg",
+                          "SaleProduct": {
+                            "quantity": 5
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não existe pedido com o id informado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "orderNotFound": {
+                    "value": {
+                      "message": "Order not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seller/orders/start/:id": {
+      "patch": {
+        "summary": "Inicia pedido recebido",
+        "description": "Essa rota atualiza o status de um pedido de \"Pendente\" para 'Preparando'",
+        "tags": ["Sellers"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Order id",
+          "required": true
+        }],
+        "responses": {
+          "204": { "description": "No content" },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não existe pedido com o id informado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "orderNotFound": {
+                    "value": {
+                      "message": "Order not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seller/orders/leave/:id": {
+      "patch": {
+        "summary": "Envia pedido para a entrega",
+        "description": "Essa rota atualiza o status de um pedido de \"Preparando\" para \"Em Trânsito\"",
+        "tags": ["Sellers"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Order id",
+          "required": true
+        }],
+        "responses": {
+          "204": { "description": "No content" },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não existe pedido com o id informado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "orderNotFound": {
+                    "value": {
+                      "message": "Order not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seller/orders/delivered/:id": {
+      "patch": {
+        "summary": "Finaliza entrega do pedido",
+        "description": "Essa rota atualiza o status de um pedido de \"Em Trânsito\" para \"Entregue\"",
+        "tags": ["Sellers"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Order id",
+          "required": true
+        }],
+        "responses": {
+          "204": { "description": "No content" },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "accessDenied": {
+                    "value": {
+                      "message": "Access denied"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não existe pedido com o id informado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DefaultResponse" },
+                "examples": {
+                  "orderNotFound": {
+                    "value": {
+                      "message": "Order not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "email": { "type": "string" },
+              "role": { "type": "string" }
+            }
+          },
+          "token": { "type": "string" }
+        }
+      },
+      "DefaultResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        }
+      },
+      "Product": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "name": { "type": "string" },
+            "price": { "type": "string" },
+            "urlImage": { "type": "string" }
+          }
+        }
+      },
+      "Sale": {
+        "type": "object",
+        "properties": {
+          "totalPrice": { "type": "number" },
+          "deliveryAddress": { "type": "string" },
+          "deliveryNumber": { "type": "string" },
+          "sellerId": { "type": "number" },
+          "products": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "quantity": { "type": "number" },
+                "id": { "type": "number" }
+              }
+            }
+          }
+        }
+      },
+      "SaleResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "products": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "quantity": { "type": "number" },
+                "id": { "type": "number" }
+              }
+            }
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "totalPrice": { "type": "string" },
+          "deliveryAddress": { "type": "string" },
+          "deliveryNumber": { "type": "string" },
+          "saleDate": { "type": "string", "format": "date-time" },
+          "status": { "type": "string" },
+          "userId": { "type": "number" },
+          "sellerId": { "type": "number" },
+          "products": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "id": { "type": "number" },
+                "name": { "type": "string" },
+                "price": { "type": "string" },
+                "urlImage": { "type": "string" },
+                "SaleProduct": {
+                  "type": "object",
+                  "properties": {
+                    "quantity": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SellerOrder": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "totalPrice": { "type": "string" },
+          "deliveryAddress": { "type": "string" },
+          "deliveryNumber": { "type": "string" },
+          "saleDate": { "type": "string", "format": "date-time" },
+          "status": { "type": "string" },
+          "userId": { "type": "number" },
+          "sellerId": { "type": "number" }
+        }
+      }
+    }
+  },
+  "securitySchemes": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  }
+}
