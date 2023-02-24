@@ -75,12 +75,11 @@ describe('Test DELETE /admin/manage/id endpoint', () => {
   describe('User exist on database', () => {
     before(async () => sinon.stub(User, 'destroy').resolves(userDbResponse));
     after(() => (User.destroy).restore());
-    it('Should return http status 200 and an object with message property', async () => {
+    it('Should return http status 204 and no content response', async () => {
       res = await chai.request(app).delete(`${ADMIN_ROUTE}/3`)
         .set({ authorization: token });
-      expect(res.status).to.be.equal(200);
-      expect(res.body).to.be.an('object').to.have.own.property('message');
-      expect(res.body.message).to.be.equal('User deleted successfully');
+      expect(res.status).to.be.equal(204);
+      expect(res.body).to.be.an('object');
     });
   });
 

@@ -17,7 +17,7 @@ const userDbResponse = {
   id: 3,
   name: 'Cliente Zé Birita',
   email: 'zebirita@email.com',
-  password: '1c37466c159755ce1fa181bd247cb925',
+  password: '$2a$10$cLXlKZiiBf2pC1O7dBWzJ.ryCzCuaZQEzs14e6PnI2EcS71nNIKqG',
   role: 'customer',
 };
 

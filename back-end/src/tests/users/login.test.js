@@ -36,7 +36,7 @@ describe('Test POST /login endpoint', () => {
       res = await chai.request(app).post('/login').send(inValidUser);
       expect(res.status).to.be.equal(400);
       expect(res.body).to.be.an('object');
-      expect(res.body).to.have.own.property('message').to.be.equal('Incorrect email or password');
+      expect(res.body).to.have.own.property('message').to.be.equal('Incorrect e-mail or password');
     });
   });
 

@@ -68,6 +68,7 @@ const validateToken = (req, res, next) => {
   const auth = getToken(req.headers.authorization);
   const token = verifyToken(auth);
   if (token.message) return res.status(401).json({ message: token.message });
+  if (token.role !== 'seller') return res.status(403).json({ message: 'Access denied' });
   next();
 };
 

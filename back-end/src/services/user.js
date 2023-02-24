@@ -1,5 +1,5 @@
-const md5 = require('md5');
 const { Op } = require('sequelize');
+const { encrypt } = require('../utils/crypt');
 const { User } = require('../database/models');
 const { generateToken } = require('../utils/jwt');
 
@@ -13,7 +13,7 @@ const register = async (name, email, password, role = 'customer') => {
   try {
     const user = await User.findOne({ where: { email } });
     if (user) return false;
-    const hash = md5(password);
+    const hash = await encrypt(password);
     await User.create({ name, email, password: hash, role });
     const token = generateToken({ name, email, role });
     return { user: { name, email, role }, token };

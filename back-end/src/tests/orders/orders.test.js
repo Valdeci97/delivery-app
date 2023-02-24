@@ -186,6 +186,16 @@ describe('Test PATCH order routes', () => {
     });
   });
 
+  describe('Test seller/orders/start/:id', () => {
+    it('send a valid token with an invalid role', async () => {
+      res = await chai.request(app).patch('/seller/orders/start/2')
+        .set({ authorization: userToken });
+      expect(res.status).to.be.equal(403);
+      expect(res.body).to.have.own.property('message');
+      expect(res.body.message).to.be.equal('Access denied');
+    });
+  });
+
   describe('Update status sale property at start route', () => {
     before(async () => { sinon.stub(Sale, 'update').resolves(startedOrder); });
     after(() => { (Sale.update).restore() });

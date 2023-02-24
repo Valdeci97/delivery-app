@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const swaggerUi = require('swagger-ui-express');
 
 const loginRouter = require('../routes/login');
 const registerRouter = require('../routes/register');
@@ -11,11 +12,13 @@ const { orderRouter, sellerOrderRouter } = require('../routes/orders');
 const sellerRouter = require('../routes/seller');
 const errorMidleware = require('../middlewares/error');
 const limiter = require('../middlewares/limiter');
+const swaggerDocument = require('../utils/swagger/swagger.json');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(limiter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
