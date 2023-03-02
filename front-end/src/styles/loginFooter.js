@@ -4,151 +4,86 @@ export const Footer = styled.footer`
   align-items: center;
   bottom: 0;
   display: flex;
-  font-size: 20px;
-  height: 80px;
+  height: 10vh;
   justify-content: space-around;
-  border-top: solid 1px black;
   width: 100%;
-
-  @media(max-width: 360px) {
-    a {
-      font-size: 0.6rem;
-
-      img {
-        display: none;
-      }
-    }
-  }
-
-  @media(min-width: 361px) and (max-width: 440px) {
-    a {
-      font-size: 0.7rem;
-    }
-
-    img {
-      display: none;
-    }
-  }
-
-  @media(min-width: 441px) and (max-width: 540px) {
-    a {
-      font-size: 0.8rem;
-
-      img {
-        display: none;
-      }
-    }
-  }
-
-  @media(min-width: 541px) and (max-width: 720px) {
-    a {
-      font-size: 0.9rem;
-
-      img {
-        display: none;
-      }
-    }
-  }
-
-  @media(min-width: 721px) and (max-width: 800px) {
-    a {
-      font-size: 1rem;
-
-      img {
-        display: none;
-      }
-    }
-  }
-
-  @media(min-width: 801px) and (max-width: 1100px) {
-    a {
-      display: flex;
-      flex-direction: column;
-      font-size: 0.8rem;
-
-      img {
-        height: 2.5rem;
-        width: 2.5rem;
-      }
-    }
-  }
-
-  @media(min-width: 1101px) and (max-width: 1500px) {
-    a {
-      display: flex;
-      flex-direction: column;
-      font-size: 0.9rem;
-    }
-
-    img {
-      height: 2.75rem;
-      width: 2.75rem;
-    }
-  }
-
-  a {
-    font-size: 0.8rem,;
-  }
-
-  img {
-    align-self: center;
-    border-radius: 50%;
-    height: 2.8rem;
-    width: 2.8rem;
-  }
-
-  a {
-    color: black;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-  }
 `;
 
 export const LeftSide = styled.div`
+  align-items: center;
   display: flex;
   font-size: 2rem;
-  text-align: center;
+  height: 100%;
+  justify-content: center;
+  width: 25%;
+`;
 
-  @media(max-width: 360px) {
-    span {
-      font-size: 0.6rem;
-    }
+export const LeftSideTitle = styled.span`
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2rem;
+
+  @media screen and (max-width: 360px) {
+    font-size: 1.25rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    span {
-      font-size: 0.7rem;
-    }
+  @media screen and (min-width: 361px) and (max-width: 540px) {
+    font-size: 1.3rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    span {
-      font-size: 0.8rem;
-    }
+  @media screen and (min-width: 541px) and (max-width: 700px) {
+    font-size: 1.4rem;
   }
 
-  @media(min-width: 541px) and (max-width: 720px) {
-    span {
-      font-size: 0.9rem;
-    }
+  @media screen and (min-width: 701px) and (max-width: 1000px) {
+    font-size: 1.5rem;
+  }
+`;
+
+export const RightSide = styled.div`
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: space-evenly;
+  width: 75%;
+`;
+
+export const GitLink = styled.a`
+  display: flex;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  flex-direction: column;
+  text-decoration: none;
+  width: 20%;
+`;
+
+export const GitImage = styled.img`
+  border-radius: 3rem;
+  width: 20%;
+
+  @media screen and (max-width: 440px) {
+    display: none;
   }
 
-  @media(min-width: 721px) and (max-width: 800px) {
-    span {
-      font-size: 1rem;
-    }
+  @media screen and (min-width: 441px) and (max-width: 700px) {
+    width: 40%;
   }
 
-  @media(min-width: 801px) and (max-width: 1100px) {
-    span {
-      font-size: 1.2rem;
-    }
+  @media screen and (min-width: 701px) and (max-width: 1000px) {
+    width: 30%;
+  }
+`;
+
+export const MemberName = styled.span`
+  font-size: 1.25rem;
+
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.2rem;
   }
 
-  @media(min-width: 1101px) and (max-width: 1300px) {
-    span {
-      font-size: 1.3rem;
-    }
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 0.8rem;
+  }
+
+  @media screen and (min-width: 701px) and (max-width: 1000px) {
+    font-size: 1.25rem;
   }
 `;

@@ -4,17 +4,27 @@ export const Container = styled.form`
   align-items: center;
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
   height: 80vh;
   justify-content: center;
   width: 100%;
 `;
 
+export const LabelContainer = styled.div`
+  align-items: center;
+  /* background-color: #7792E490; */
+  background-color: #00649410;
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  justify-content: center;
+  width: 50%;
+`;
+
 export const Label = styled.label`
   display: flex;
   flex-direction: column;
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 10px;
+  font-size: 2.5rem;
   text-align: center;
 `;
 
@@ -56,4 +66,12 @@ export const RevealPassword = styled.button`
   &:hover {
     cursor: pointer;
   }
+`;
+
+export const SelectRole = styled.select`
+  background-color: blue;
+`;
+
+export const RoleOption = styled.option`
+  background-color: red;
 `;

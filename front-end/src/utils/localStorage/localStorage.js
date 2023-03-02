@@ -24,6 +24,14 @@ export function removeFromLocalStorage(key) {
   localStorage.removeItem(key);
 }
 
+export function getThemePreference() {
+  return localStorage.getItem('isDarkMode');
+}
+
+export function setThemePreference(theme) {
+  localStorage.setItem('isDarkMode', theme);
+}
+
 // useLocalStorage hook explanation: https://usehooks.com/useLocalStorage/
 
 export function useLocalStorage(key, initialValue) {

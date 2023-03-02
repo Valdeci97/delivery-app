@@ -70,76 +70,84 @@ export default function Register() {
     <>
       <Header />
       <S.Container>
-        <S.Label htmlFor="name-input">
-          Nome
-          <S.Input
-            data-testid="common_register__input-name"
-            id="name-input"
-            onChange={ ({ target }) => setName(target.value) }
-            name="name"
-            type="text"
-            placeholder="Seu nome"
-            value={ name }
-          />
-        </S.Label>
-        <S.Label htmlFor="email-input">
-          Email
-          <S.Input
-            data-testid="common_register__input-email"
-            id="email-input"
-            onChange={ ({ target }) => setEmail(target.value) }
-            name="email"
-            type="text"
-            value={ email }
-            placeholder="customer@deliveryapp.com"
-          />
-        </S.Label>
-        <S.Label htmlFor="password-input">
-          Senha
-          <S.Input
-            data-testid="common_register__input-password"
-            id="password-input"
-            onChange={ ({ target }) => setPassword(target.value) }
-            name="password"
-            type={ reveal ? 'text' : 'password' }
-            value={ password }
-            placeholder="********"
-          />
-          <S.RevealPassword
+        <S.LabelContainer>
+          <S.Label htmlFor="name-input">
+            Nome
+            <S.Input
+              data-testid="common_register__input-name"
+              id="name-input"
+              onChange={ ({ target }) => setName(target.value) }
+              name="name"
+              type="text"
+              placeholder="Seu nome"
+              value={ name }
+            />
+          </S.Label>
+          <S.Label htmlFor="email-input">
+            Email
+            <S.Input
+              data-testid="common_register__input-email"
+              id="email-input"
+              onChange={ ({ target }) => setEmail(target.value) }
+              name="email"
+              type="text"
+              value={ email }
+              placeholder="customer@deliveryapp.com"
+            />
+          </S.Label>
+          <S.Label htmlFor="password-input">
+            Senha
+            <S.Input
+              data-testid="common_register__input-password"
+              id="password-input"
+              onChange={ ({ target }) => setPassword(target.value) }
+              name="password"
+              type={ reveal ? 'text' : 'password' }
+              value={ password }
+              placeholder="********"
+            />
+            <S.RevealPassword
+              type="button"
+              onClick={ () => setReveal(!reveal) }
+            >
+              {
+                reveal ? <IoEyeOutline /> : <IoEyeOffOutline />
+              }
+            </S.RevealPassword>
+          </S.Label>
+          <S.Label htmlFor="confirm-password-input">
+            Confirmar Senha
+            <S.Input
+              id="confirm-password-input"
+              type={ reveal ? 'text' : 'password' }
+              value={ confirmPassword }
+              onChange={ ({ target }) => setConfirmPassword(target.value) }
+              name="confirm-password"
+              placeholder="********"
+            />
+            <S.RevealPassword
+              type="button"
+              onClick={ () => setReveal(!reveal) }
+            >
+              {
+                reveal ? <IoEyeOutline /> : <IoEyeOffOutline />
+              }
+            </S.RevealPassword>
+          </S.Label>
+          <S.Label>
+            <S.SelectRole>
+              <S.RoleOption>cliente</S.RoleOption>
+              <S.RoleOption>vendedor</S.RoleOption>
+            </S.SelectRole>
+          </S.Label>
+          <S.Button
+            data-testid="common_register__button-register"
             type="button"
-            onClick={ () => setReveal(!reveal) }
+            onClick={ sendRegisterInfo }
           >
-            {
-              reveal ? <IoEyeOutline /> : <IoEyeOffOutline />
-            }
-          </S.RevealPassword>
-        </S.Label>
-        <S.Label htmlFor="confirm-password-input">
-          Confirmar Senha
-          <S.Input
-            id="confirm-password-input"
-            type={ reveal ? 'text' : 'password' }
-            value={ confirmPassword }
-            onChange={ ({ target }) => setConfirmPassword(target.value) }
-            name="confirm-password"
-            placeholder="********"
-          />
-          <S.RevealPassword
-            type="button"
-            onClick={ () => setReveal(!reveal) }
-          >
-            {
-              reveal ? <IoEyeOutline /> : <IoEyeOffOutline />
-            }
-          </S.RevealPassword>
-        </S.Label>
-        <S.Button
-          data-testid="common_register__button-register"
-          type="button"
-          onClick={ sendRegisterInfo }
-        >
-          Cadastrar
-        </S.Button>
+            Cadastrar
+          </S.Button>
+        </S.LabelContainer>
       </S.Container>
       <Footer />
     </>
