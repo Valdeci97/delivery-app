@@ -3,7 +3,7 @@ require('dotenv/config');
 const jwt = require('jsonwebtoken');
 
 const SECRET = process.env.JWT_SECRET;
-const CONFIG = { algorithm: 'HS256' };
+const CONFIG = { algorithm: 'HS256', expiresIn: '24h' };
 
 const generateToken = ({ name, email, role }) => jwt.sign({ name, email, role }, SECRET, CONFIG);
 

@@ -17,7 +17,9 @@ const swaggerDocument = require('../utils/swagger/swagger.json');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(limiter);
 app.use('/login', loginRouter);
