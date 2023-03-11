@@ -16,13 +16,14 @@ export async function login(email, password) {
   return user;
 }
 
-export async function register(name, email, password) {
+export async function register(name, email, password, role) {
   const user = await axios.post(
     'http://localhost:3001/register',
     {
       name,
       email,
       password,
+      role,
     },
   )
     .then((result) => result.data)

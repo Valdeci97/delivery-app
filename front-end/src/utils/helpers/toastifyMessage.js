@@ -2,16 +2,12 @@ import React from 'react';
 
 export default function ToastMessage() {
   return (
-    <div>
-      <span>A senha deve ter ao menos:</span>
+    <div style={ { fontSize: '2rem', width: '100%' } }>
+      <span>A senha deve ter pelo menos</span>
       <br />
-      <span>- 1 letra minúscula;</span>
+      <span>- 1 letra minúscula e 1 maiúscula;</span>
       <br />
-      <span>- 1 maiúscula;</span>
-      <br />
-      <span>- No mínimo 8 caracteres de compprimento;</span>
-      <br />
-      <span>- 1 caractere especial dentre esses ( $ * & @ # ).</span>
+      <span>- 8 caracteres e 1 caractere especial ( $ * & @ # ).</span>
     </div>
   );
 }

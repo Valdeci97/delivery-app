@@ -75,6 +75,10 @@ export const GitImage = styled.img`
 export const MemberName = styled.span`
   font-size: 1.25rem;
 
+  @media screen and (max-width: 360px) {
+    font-size: 1rem;
+  }
+
   @media screen and (min-width: 361px) and (max-width: 440px) {
     font-size: 1.2rem;
   }

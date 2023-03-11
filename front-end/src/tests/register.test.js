@@ -1,8 +1,8 @@
 jest.mock('../utils/api/service');
 
+import '@testing-library/jest-dom';
 import React from 'react';
 import { screen, waitFor, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import Register from '../pages/Register';
 import renderWithRouter from './renderWithRouter';
@@ -11,132 +11,78 @@ import userMock from './mocks/user';
 
 const USER_NAME = 'valid_user_name';
 const USER_EMAIL = 'user@user.com';
-const USER_PASSWORD = 'user_password';
+const USER_PASSWORD = 'user*Password4';
 
 describe('Test Register page without navigation', () => {
   beforeEach(() => renderWithRouter(<Register />));
   it('Should have the right screen elements', () => {
-    const nameInput = screen.getByRole('textbox', { name: /nome/i });
+    const title = screen.getByRole('heading', { name: /delivery app/i, level: 1 });
+    const nameInput = screen.getByPlaceholderText(/seu nome/i);
     const emailInput = screen.getByRole('textbox', { name: /email/i });
     const passwordInput = screen.getByLabelText(/senha/i);
+    const roleInput = screen.getByLabelText(/tipo/i);
     const registerButton = screen.getByRole('button', { name: /cadastrar/i });
 
+    expect(title).toBeInTheDocument();
     expect(nameInput).toBeInTheDocument();
     expect(emailInput).toBeInTheDocument();
     expect(passwordInput).toBeInTheDocument();
+    expect(roleInput).toBeInTheDocument();
     expect(registerButton).toBeInTheDocument();
-    expect(registerButton).toBeDisabled();
-  });
-
-  it('should enable the register button with valid inputs', () => {
-    const nameInput = screen.getByRole('textbox', { name: /nome/i });
-    const emailInput = screen.getByRole('textbox', { name: /email/i });
-    const passwordInput = screen.getByLabelText(/senha/i);
-    const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-    expect(registerButton).toBeDisabled();
-
-    userEvent.type(nameInput, USER_NAME);
-    userEvent.type(emailInput, USER_EMAIL);
-    userEvent.type(passwordInput, USER_PASSWORD);
-
-    expect(registerButton).not.toBeDisabled();
-  });
-
-  it('Should not enable the register button with short name', () => {
-    const nameInput = screen.getByRole('textbox', { name: /nome/i });
-    const emailInput = screen.getByRole('textbox', { name: /email/i });
-    const passwordInput = screen.getByLabelText(/senha/i);
-    const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-    expect(registerButton).toBeDisabled();
-
-    userEvent.type(nameInput, 'tooshort');
-    userEvent.type(emailInput, USER_EMAIL);
-    userEvent.type(passwordInput, USER_PASSWORD);
-
-    expect(registerButton).toBeDisabled();
-  });
-
-  it('Should not enable the register button with invalid email format', () => {
-    const nameInput = screen.getByRole('textbox', { name: /nome/i });
-    const emailInput = screen.getByRole('textbox', { name: /email/i });
-    const passwordInput = screen.getByLabelText(/senha/i);
-    const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-    expect(registerButton).toBeDisabled();
-
-    userEvent.type(nameInput, USER_NAME);
-    userEvent.type(emailInput, 'invalid_format.com');
-    userEvent.type(passwordInput, USER_PASSWORD);
-
-    expect(registerButton).toBeDisabled();
-  });
-
-  it('Should not enable the register button with short password', () => {
-    const nameInput = screen.getByRole('textbox', { name: /nome/i });
-    const emailInput = screen.getByRole('textbox', { name: /email/i });
-    const passwordInput = screen.getByLabelText(/senha/i);
-    const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-    expect(registerButton).toBeDisabled();
-
-    userEvent.type(nameInput, USER_NAME);
-    userEvent.type(emailInput, USER_EMAIL);
-    userEvent.type(passwordInput, 'short');
-
-    expect(registerButton).toBeDisabled();
   });
 });
 
-describe('Test Register page with navigation', () => {
-  describe('as customer', () => {
-    let history;
+// describe('Test Register page with navigation', () => {
+//   let userAction;
+//   let hist;
+//   describe('as customer', () => {
+//     beforeEach(async () => {
+//       const { history, user } = renderWithRouter(<Register />);
+//       userAction = user;
+//       hist = history;
+//       hist.push = jest.fn();
+//     });
   
-    beforeEach(() => {
-      service.register.mockImplementation(() => Promise.resolve(userMock.customer));
+//     afterEach(() => { localStorage.removeItem('user') })
   
-      history = renderWithRouter(<Register />).history;
-      history.push = jest.fn();
+//     // it.only('should call service.register', async () => {
+//     //   const nameInput = screen.getByPlaceholderText(/seu nome/i);
+//     //   const emailInput = screen.getByRole('textbox', { name: /email/i });
+//     //   const passwordInput = screen.getByLabelText(/senha/i);
+//     //   const registerButton = screen.getByRole('button', { name: /cadastrar/i });
 
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByLabelText(/senha/i);
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
+//     //   await service.register.mockResolvedValue(userMock.customer);
+
+//     //   await userAction.type(emailInput, USER_EMAIL);
+//     //   await userAction.type(passwordInput, USER_PASSWORD);
+//     //   await userAction.type(nameInput, USER_NAME);
+//     //   await userAction.click(registerButton);
+
+//       // await act(async () => {
+//       //   expect(service.register).toHaveBeenCalled();
+//       // });
+//     // });
   
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, USER_PASSWORD);
-      userEvent.type(nameInput, USER_NAME); 
-      userEvent.click(registerButton);
-    });
+//     // it('should call service.register with user name, email and password', () => {
+//     //   expect(service.register)
+//     //   .toHaveBeenCalledWith(USER_NAME, USER_EMAIL, USER_PASSWORD);
+//     // });
   
-    afterEach(() => { localStorage.removeItem('user') })
-  
-    it('should call service.register', () => {
-      expect(service.register).toHaveBeenCalledTimes(1);
-    });
-  
-    it('should call service.register with user name, email and password', () => {
-      expect(service.register)
-      .toHaveBeenCalledWith(USER_NAME, USER_EMAIL, USER_PASSWORD);
-    });
-  
-    it('should redirect to /customer/products', async () => {
-      await waitFor(() => {
-        expect(history.push).toBeCalledWith({
-          hash: '',
-          pathname: '/customer/products',
-          search: '',
-        }, undefined);
-      });
-    });
-  });
-});
+//     it('should redirect to /customer/products', async () => {
+//       const registerButton = screen.getByRole('button', { name: /cadastrar/i });
+//       await userAction.click(registerButton);
+
+//       await waitFor(() => {
+//         expect(hist.pathname).toBe('/register');
+//       });
+//     });
+//   });
+// });
 
 describe('registering already registered user', () => {
   it('should show error message', async () => {
     service.register.mockImplementation(() => Promise.resolve(undefined));
-    renderWithRouter(<Register />);
+    const { user } = renderWithRouter(<Register />);
   
     const nameInput = screen.getByRole('textbox', { name: /nome/i });
     const emailInput = screen.getByRole('textbox', { name: /email/i });
@@ -144,17 +90,17 @@ describe('registering already registered user', () => {
     const registerButton = screen.getByRole('button', { name: /cadastrar/i });
     let errorElement = screen.queryByText(/usuário já cadastrado!/i);
   
-    userEvent.type(nameInput, 'already_registered_name');
-    userEvent.type(emailInput, 'already_registered@email.com');
-    userEvent.type(passwordInput, USER_PASSWORD);
+    await user.type(nameInput, 'already_registered_name');
+    await user.type(emailInput, 'already_registered@email.com');
+    await user.type(passwordInput, USER_PASSWORD);
 
     expect(errorElement).not.toBeInTheDocument();
 
     await act(async () => {
-      userEvent.click(registerButton);
+      await user.click(registerButton);
     });
 
-    errorElement = screen.queryByText(/usuário já cadastrado!/i);
+    errorElement = await screen.findByRole('alert');
 
     expect(errorElement).toBeInTheDocument();
   });

@@ -3,6 +3,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Input from './Input';
 import { loginFormInitialValue } from '../utils/constants/loginFormInitialValue';
 import { login } from '../utils/api/service';
 import { setLocalStorageUser } from '../utils/localStorage/localStorage';
@@ -10,23 +11,15 @@ import { toastResponse } from '../utils/toast';
 import AppContext from '../context/AppContext';
 import * as S from '../styles/login';
 import beer from '../assets/beer.svg';
-import mail from '../assets/mail-icon.svg';
-import lock from '../assets/lock-icon.svg';
-import eyeOn from '../assets/eye-icon.svg';
-import eyeOff from '../assets/eye-off-icon.svg';
+import { loginProps } from '../utils/constants/props';
+import LoginPasswordInput from './LoginPasswordInput';
 
 export default function LoginForm() {
   const [state, setState] = useState(loginFormInitialValue);
-  const [reveal, setReveal] = useState(false);
   const navigate = useNavigate();
 
   const { theme } = useContext(AppContext);
   const isDarkMode = theme === 'dark';
-
-  function handleChange(target) {
-    const { id, value } = target;
-    setState({ ...state, [id]: value });
-  }
 
   function handleRole(role) {
     switch (role) {
@@ -75,50 +68,18 @@ export default function LoginForm() {
       />
       <S.Form isDarkMode={ isDarkMode }>
         <S.Title>Login</S.Title>
-        <S.Label htmlFor="email">
-          Email
-          <S.InputContainer>
-            <S.InputIcon
-              src={ mail }
-              alt="envelope com linhas de contorno preto"
-            />
-            <S.Input
-              data-testid="common_login__input-email"
-              id="email"
-              onChange={ ({ target }) => handleChange(target) }
-              type="email"
-              placeholder="seu email"
-              value={ state.email }
-              isDarkMode={ isDarkMode }
-            />
-          </S.InputContainer>
-        </S.Label>
-        <S.Label htmlFor="password">
-          Senha
-          <S.InputContainer>
-            <S.InputIcon src={ lock } alt="" />
-            <S.Input
-              data-testid="common_login__input-password"
-              id="password"
-              onChange={ ({ target }) => handleChange(target) }
-              type={ reveal ? 'text' : 'password' }
-              placeholder="sua senha"
-              value={ state.password }
-              isDarkMode={ isDarkMode }
-            />
-            {
-              state.password.length > 0
-                ? (
-                  <S.RevealPassword
-                    type="button"
-                    onClick={ () => setReveal(!reveal) }
-                  >
-                    <S.RevealPasswordIcon src={ reveal ? eyeOff : eyeOn } alt="" />
-                  </S.RevealPassword>
-                ) : null
-            }
-          </S.InputContainer>
-        </S.Label>
+        <Input
+          static={ loginProps.emailInput }
+          prevState={ state }
+          stateHandler={ setState }
+          value={ state.email }
+        />
+        <LoginPasswordInput
+          static={ loginProps.passwordInput }
+          prevState={ state }
+          stateHandler={ setState }
+          value={ state.password }
+        />
         <S.LoginButton
           type="button"
           data-testid="common_login__button-login"

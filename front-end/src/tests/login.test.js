@@ -2,13 +2,11 @@ jest.mock('../utils/api/service');
 
 import '@testing-library/jest-dom';
 import { screen, waitFor, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import Login from '../pages/Login';
 import renderWithRouter from './renderWithRouter';
 import * as service from '../utils/api/service';
 import userMock from './mocks/user';
-import { wait } from '@testing-library/user-event/dist/utils';
 
 const USER_EMAIL = 'user@user.com';
 const USER_PASSWORD = 'user_password';
@@ -41,6 +39,7 @@ describe('Test Login page without navigation', () => {
 
   describe('should auto redirect', () => {
     afterEach(() => localStorage.removeItem('user'));
+    afterAll(() => jest.resetAllMocks());
 
     it('to /customer/products if localStorage has customer info', () => {
       localStorage.setItem('user', JSON.stringify({ role: userMock.customer.user.role }));
@@ -73,37 +72,39 @@ describe('Test login page with navigation', () => {
   afterEach(() => jest.resetAllMocks());
 
   describe('Trying to register', () => {
-    it('Should redirect user to /register by clicking in register button', () => {
-      const { history } = renderWithRouter(<Login />);
+    it('Should redirect user to /register by clicking in register button', async () => {
+      const { history, user } = renderWithRouter(<Login />);
       const registerButton = screen.getByRole('button', { name: /cadastre\-se/i });
-      userEvent.click(registerButton);
+      await user.click(registerButton);
       expect(history.location.pathname).toBe('/register');
     });
   });
   
   describe('Trying to log in', () => {    
     describe('as customer', () => {
-      let history;
+      let hist;
       let emailInput;
       let passwordInput;
       let loginButton;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         service.login.mockImplementation(() => Promise.resolve(userMock.customer));
   
-        history = renderWithRouter(<Login />).history;
-        history.push = jest.fn();
+        const { history, user } = renderWithRouter(<Login />);
+        hist = history;
+        hist.push = jest.fn();
   
         emailInput = screen.getByRole('textbox', { name: /email/i });
         passwordInput = screen.getByLabelText(/senha/i);
         loginButton = screen.getByRole('button', { name: /entrar/i });
     
-        userEvent.type(emailInput, USER_EMAIL);
-        userEvent.type(passwordInput, USER_PASSWORD); 
-        userEvent.click(loginButton);
+        await user.type(emailInput, USER_EMAIL);
+        await user.type(passwordInput, USER_PASSWORD); 
+        await user.click(loginButton);
       });
   
-      afterEach(() => { localStorage.removeItem('user') })
+      afterEach(() => { localStorage.removeItem('user') });
+      afterAll(() => jest.resetAllMocks());
     
       it('should call service.login', () => {
         expect(service.login).toHaveBeenCalledTimes(1);
@@ -117,7 +118,7 @@ describe('Test login page with navigation', () => {
   
       it('should redirect to /customer/products', async () => {
         await waitFor(() => {
-          expect(history.push).toBeCalledWith({
+          expect(hist.push).toBeCalledWith({
             hash: '',
             pathname: '/customer/products',
             search: '',
@@ -132,16 +133,16 @@ describe('Test login page with navigation', () => {
       it('should redirect to /admin/manage', async () => {
         service.login.mockImplementation(() => Promise.resolve(userMock.administrator));
   
-        const { history } = renderWithRouter(<Login />);
+        const { history, user } = renderWithRouter(<Login />);
         history.push = jest.fn();
   
         const emailInput = screen.getByRole('textbox', { name: /email/i });
         const passwordInput = screen.getByLabelText(/senha/i);
         const loginButton = screen.getByRole('button', { name: /entrar/i });
     
-        userEvent.type(emailInput, USER_EMAIL);
-        userEvent.type(passwordInput, USER_PASSWORD); 
-        userEvent.click(loginButton);
+        await user.type(emailInput, USER_EMAIL);
+        await user.type(passwordInput, USER_PASSWORD); 
+        await user.click(loginButton);
 
         await waitFor(() => {
           expect(history.push).toBeCalledWith({
@@ -159,16 +160,16 @@ describe('Test login page with navigation', () => {
       it('should redirect to /seller/orders', async () => {
         service.login.mockImplementation(() => Promise.resolve(userMock.seller));
   
-        const { history } = renderWithRouter(<Login />);
+        const { history, user } = renderWithRouter(<Login />);
         history.push = jest.fn();
   
         const emailInput = screen.getByRole('textbox', { name: /email/i });
         const passwordInput = screen.getByLabelText(/senha/i);
         const loginButton = screen.getByRole('button', { name: /entrar/i });
     
-        userEvent.type(emailInput, USER_EMAIL);
-        userEvent.type(passwordInput, USER_PASSWORD); 
-        userEvent.click(loginButton);
+        await user.type(emailInput, USER_EMAIL);
+        await user.type(passwordInput, USER_PASSWORD); 
+        await user.click(loginButton);
 
         await waitFor(() => {
           expect(history.push).toBeCalledWith({
@@ -183,17 +184,17 @@ describe('Test login page with navigation', () => {
     describe('with invalid user email or password', () => {
       it('should show error message', async () => {
         service.login.mockImplementation(() => Promise.resolve(undefined));
-        renderWithRouter(<Login />);
+        const { user } = renderWithRouter(<Login />);
       
         const emailInput = screen.getByRole('textbox', { name: /email/i });
         const passwordInput = screen.getByLabelText(/senha/i);
         const loginButton = screen.getByRole('button', { name: /entrar/i });
     
-        userEvent.type(emailInput, 'wrong@email.com');
-        userEvent.type(passwordInput, 'wrong_password');
+        await user.type(emailInput, 'wrong@email.com');
+        await user.type(passwordInput, 'wrong_password');
     
         await act(async () => {
-          userEvent.click(loginButton);
+          await user.click(loginButton);
         });
     
         const errorElement = await screen.findByRole('alert');

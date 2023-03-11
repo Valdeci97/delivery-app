@@ -58,7 +58,7 @@ export const Form = styled.form`
   }
 
   @media screen and (min-width: 701px) and (max-width: 1000px) {
-    height: 50%;
+    height: 55%;
     width: 45%;
   }
 `;
@@ -69,73 +69,6 @@ export const Title = styled.h1`
 
   @media screen and (min-width: 541px) and (max-width: 700px) {
     font-size: 1.75rem;
-  }
-`;
-
-export const Label = styled.label`
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  font-size: large;
-  font-weight: bold;
-  gap: 0.5rem;
-  width: 80%;
-
-  @media screen and (min-width: 541px) and (max-width: 700px) {
-    font-size: 1.5rem;
-  }
-`;
-
-export const InputContainer = styled.div`
-  background-color: #ffffff30;
-  border: solid 1px #ffffff40;
-  border-radius: 0.5rem;
-  display: flex;
-  width: 100%;
-`;
-
-export const InputIcon = styled.img`
-  background-color: #ffffff30;
-  width: 5%;
-
-  @media screen and (min-width: 701px) and (max-width: 1000px) {
-    width: 10%;
-  }
-`;
-
-export const Input = styled.input`
-  background-color: #ffffff30;
-  border: none;
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  height: 4rem;
-  padding: 1rem;
-  width: 95%;
-
-  &::placeholder {
-    color: #fff;
-    font-size: 1.75rem;
-    text-align: justify;
-    text-justify: auto;
-  }
-
-  @media screen and (min-width: 541px) and (max-width: 700px) {
-    font-size: 1rem;
-    width: 90%;
-
-    &&::placeholder {
-      font-size: 1rem;
-    }
-  }
-
-  @media screen and (min-width: 701px) and (max-width: 1000px) {
-    font-size: 1.5rem;
-    width: 90%;
-
-    &&::placeholder {
-      font-size: 1.5rem;
-    }
   }
 `;
 
