@@ -4,10 +4,14 @@ import CustomerContext from '../context/CustomerContext';
 import priceToReal from '../utils/helpers/priceToReal';
 import totalPrice from '../utils/helpers/totalPrice';
 import Button from '../styles/cartButton';
+import AppContext from '../context/AppContext';
 
 export default function CartButton() {
+  const { theme } = useContext(AppContext);
   const { cart } = useContext(CustomerContext);
   const [total, setTotal] = useState('0');
+
+  const isDarkMode = theme === 'dark';
 
   const navigate = useNavigate();
 
@@ -26,8 +30,9 @@ export default function CartButton() {
       disabled={ cart.length === 0 }
       onClick={ () => navigate('/customer/checkout') }
       type="button"
+      isDarkMode={ isDarkMode }
     >
-      Ver Carrinho: R$
+      Ver Carrinho: R$&nbsp;
       <span
         data-testid="customer_products__checkout-bottom-value"
       >

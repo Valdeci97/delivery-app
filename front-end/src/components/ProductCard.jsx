@@ -3,10 +3,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import CustomerContext from '../context/CustomerContext';
 import priceToReal from '../utils/helpers/priceToReal';
 import * as S from '../styles/productCard';
+import AppContext from '../context/AppContext';
 
 export default function ProductCard({ product }) {
   const { id, name, urlImage, price } = product;
   const { cart, setCart } = useContext(CustomerContext);
+  const { theme } = useContext(AppContext);
+
+  const isDarkMode = theme === 'dark';
 
   const [quantity, setQuantity] = useState(() => {
     if (!cart || cart.length === 0) return 0;
@@ -60,20 +64,20 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <S.Container>
+    <S.Container isDarkMode={ isDarkMode }>
       <S.Img
         alt={ name }
         data-testid={ `customer_products__img-card-bg-image-${id}` }
         src={ urlImage }
-        width={ 50 }
       />
       <S.Description
         data-testid={ `customer_products__element-card-title-${id}` }
+        isDarkMode={ isDarkMode }
       >
         { name }
       </S.Description>
-      <S.Currency>
-        R$
+      <S.Currency isDarkMode={ isDarkMode }>
+        R$&nbsp;
         <span
           data-testid={ `customer_products__element-card-price-${id}` }
         >
@@ -83,25 +87,26 @@ export default function ProductCard({ product }) {
       <S.ProductQuantity
         data-testid={ `customer_products__input-card-quantity-${id}` }
         onChange={ handleQuantity }
-        placeholder="0"
         type="number"
         value={ quantity }
       />
       <S.CartButtonContainer>
-        <S.CartButtonLeft
+        <S.CartQuantityButton
           data-testid={ `customer_products__button-card-rm-item-${id}` }
           type="button"
           onClick={ removeFromCart }
+          isDarkMode={ isDarkMode }
         >
           -
-        </S.CartButtonLeft>
-        <S.CartButtonRight
+        </S.CartQuantityButton>
+        <S.CartQuantityButton
           data-testid={ `customer_products__button-card-add-item-${id}` }
           type="button"
           onClick={ addToCart }
+          isDarkMode={ isDarkMode }
         >
           +
-        </S.CartButtonRight>
+        </S.CartQuantityButton>
       </S.CartButtonContainer>
     </S.Container>
   );

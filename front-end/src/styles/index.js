@@ -9,6 +9,20 @@ export default createGlobalStyle`
     font-size: 62.5%;
   }
 
+  *::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: ${(props) => (props.isDarkMode ? '#ccc' : '#444')};
+    border-radius: 0.25rem;
+    border: solid 2rem ${(props) => (props.isDarkMode ? '#ccc' : '#444')};
+  }
+
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

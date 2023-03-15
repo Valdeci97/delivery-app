@@ -2,47 +2,34 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   align-items: center;
-  border-radius: 8px;
-  box-shadow: 1.5px 1.5px 5px 1px #23231A;
+  background: ${(props) => (props.isDarkMode ? '#7D4F7D90' : '#34AD5880')};
+  border: solid 1px #ffffff40;
+  border-radius: 0.5rem;
   display: flex;
   flex-direction: column;
-  height: 250px;
+  height: 30rem;
+  justify-content: center;
   margin-bottom: 1.5rem;
-  width: 350px;
+  width: 30%;
 
-  @media(max-width: 360px) {
-    height: 150px;
-    width: 200px;
-  }
-
-  @media(min-width: 361px) and (max-width: 440px) {
-    height: 150px;
-    width: 175px;
+  @media screen and (max-width: 440px) {
+    height: 25rem;
+    padding: 1.5rem 0;
+    width: 90%;
   }
   
-  @media(min-width: 441px) and (max-width: 540px) {
-    height: 170px;
-    width: 200px;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    height: 30rem;
+    width: 90%;
   }
 
-  @media(min-width: 541px) and (max-width: 720px) {
-    height: 200px;
-    width: 200px;
+  @media screen and (min-width: 541px) and (max-width: 720px) {
+    height: 25rem;
+    width: 45%;
   }
 
-  @media(min-width: 721px) and (max-width: 840px) {
-    height: 220px;
-    width: 230px;
-  }
-
-  @media(min-width: 841px) and (max-width: 1080px) {
-    height: 220px;
-    width: 275px;
-  }
-
-  @media(min-width: 1081px) and (max-width: 1200px) {
-    height: 250px;
-    width: 320px;
+  @media screen and (min-width: 721px) and (max-width: 840px) {
+    height: 27.5rem;
   }
 
   button {
@@ -53,23 +40,24 @@ export const Container = styled.div`
 `;
 
 export const Img = styled.img`
-  height: 80px;
+  border-radius: 0.5rem;
+  height: 12.5rem;
   margin-bottom: 0.5rem;
-  width: 80px;
+  width: 15rem;
 
-  @media(max-width: 440px) {
-    height: 50px;
-    width: 50px;
+  @media screen and (max-width: 440px) {
+    height: 50%;
+    width: 50%;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    height: 60px;
-    width: 60px;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    height: 50%;
+    width: 40%;
   }
 
-  @media(min-width: 541px) and (max-width: 840px) {
-    height: 70px;
-    width: 70px;
+  @media screen and (min-width: 541px) and (max-width: 840px) {
+    height: 40%;
+    width: 50%;
   }
 
   &:hover {
@@ -78,158 +66,100 @@ export const Img = styled.img`
 `;
 
 export const Description = styled.span`
-  font-size: 20px;
-  font-weight: bold;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2rem;
   text-align: center;
 
-  @media(max-width: 440px) {
-    font-size: 12px;
+  @media screen and (max-width: 440px) {
+    font-size: 2rem;
   }
 
-  @media(min-width: 441px) and (max-width: 720px) {
-    font-size: 15px;
-  }
-
-  @media(min-width: 721px) and (max-width: 840px) {
-    font-size: 18px;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 2.5rem;
   }
 `;
 
 export const Currency = styled.p`
-  font-size: 20px;
-  font-weight: bold;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2rem;
 
-  @media(max-width: 440px) {
-    font-size: 12px;
+  span {
+    font-size: 2rem;
   }
 
-  @media(min-width: 441px) and (max-width: 720px) {
-    font-size: 15px;
-  }
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 2.5rem;
 
-  @media(min-width: 721px) and (max-width: 840px) {
-    font-size: 18px;
+    span {
+      font-size: 2.5rem;
+    }
   }
 `;
 
 export const CartButtonContainer = styled.div`
   display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  width: 60%;
+
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    width: 50%;
+  }
+`;
+
+export const SeeCartButtonContainer = styled.div`
+  align-items: center;
+  display: flex;
   justify-content: center;
+  margin-bottom: 1rem;
+  width: 100%;
 `;
 
-export const CartButtonLeft = styled.button`
-  background: #23022e;
-  border: solid 1px black;
-  border-radius: 25%;
+export const CartQuantityButton = styled.button`
+  background: ${(props) => (props.isDarkMode ? '#7D4F7D' : '#34AD58aa')};
+  border: solid 1px #ffffff40;
+  border-radius: 0.75rem;
   color: #fff;
-  font-size: 1.5rem;
-  height: 30px;
-  margin-right: 30px;
-  margin-top: 0.5rem;
+  font-size: 2.5rem;
+  height: 3.5rem;
   text-align: center;
-  width: 30px;
+  width: 3.5rem;
 
-  @media(max-width: 440px) {
-    font-size: 0.8rem;
-    height: 20px;
-    width: 25px;
+  @media screen and (max-width: 540px) {
+    font-size: 2rem;
+    height: 3rem;
+    width: 3rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 1rem;
-    height: 22px;
-    width: 25px;
-  }
-
-  @media(min-width: 541px) and (max-width: 720px) {
-    font-size: 1.2rem;
-    height: 25px;
-    width: 25px;
-  }
-
-  @media(min-width: 721px) and (max-width: 840px) {
-    font-size: 1.3rem;
-    height: 28px;
-    width: 28px;
-  }
-`;
-
-export const CartButtonRight = styled.button`
-  background: #23022e;
-  border: solid 1px black;
-  border-radius: 25%;
-  color: #fff;
-  font-size: 1.5rem;
-  height: 30px;
-  margin-left: 30px;
-  margin-top: 0.5rem;
-  text-align: center;
-  width: 30px;
-
-  @media(max-width: 440px) {
-    font-size: 0.8rem;
-    height: 20px;
-    width: 20px;
-  }
-
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 1rem;
-    height: 22px;
-    width: 22px;
-  }
-
-  @media(min-width: 541px) and (max-width: 720px) {
-    font-size: 1.2rem;
-    height: 25px;
-    width: 25px;
-  }
-
-  @media(min-width: 721px) and (max-width: 840px) {
-    font-size: 1.3rem;
-    height: 28px;
-    width: 28px;
+  @media screen and (min-width: 541px) and (max-width: 720px) {
+    height: 3.25rem;
+    width: 3.25rem;
   }
 `;
 
 export const ProductQuantity = styled.input`
-  border: solid 1px black;
-  border-radius: 20px;
-  font-size: 20px;
+  background-color: #ffffff80;
+  border: solid 1px #ffffff90;
+  border-radius: 0.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  height: 25px;
+  height: 2.5rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   text-align: center;
-  width: 150px;
+  width: 60%;
 
-  @media(max-width: 440px) {
-    font-size: 12px;
-    height: 15px;
-    width: 80px;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    width: 50%;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 15px;
-    height: 18px;
-    width: 100px;
-  }
-
-  @media(min-width: 541px) and (max-width: 720px) {
-    font-size: 18px;
-    height: 20px;
-    width: 120px;
-  }
-
-  @media(min-width: 721px) and (max-width: 840px) {
-    font-size: 20px;
-    height: 30px;
-    width: 150px;
-  }
+  @media screen and (min-width: 541px) and (max-width: 720px) {
+    width: 60%;
+  }   
 `;
 
 export const ProductSection = styled.section`
   align-items: center;
-  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;

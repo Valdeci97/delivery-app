@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import { localStorageUser } from '../utils/localStorage/localStorage';
 import * as S from '../styles/productNavBar';
 import Switch from './Switch';
+import AppContext from '../context/AppContext';
 
 export default function BasicNavBar({ links, dataTestIds }) {
+  const { theme } = useContext(AppContext);
   const navigate = useNavigate();
+
+  const isDarkMode = theme === 'dark';
 
   const logout = () => {
     localStorage.clear();
@@ -16,7 +20,7 @@ export default function BasicNavBar({ links, dataTestIds }) {
   return (
     <S.Container>
       <S.Nav>
-        <S.List>
+        <S.List isDarkMode={ isDarkMode }>
           { links.map(({ testid, text, path }) => (
             <Link
               to={ path }
@@ -31,6 +35,7 @@ export default function BasicNavBar({ links, dataTestIds }) {
       <S.RightSide>
         <S.Title
           data-testid={ dataTestIds.name }
+          isDarkMode={ isDarkMode }
         >
           { localStorageUser().name }
         </S.Title>
@@ -38,6 +43,7 @@ export default function BasicNavBar({ links, dataTestIds }) {
           data-testid={ dataTestIds.button }
           onClick={ logout }
           type="button"
+          isDarkMode={ isDarkMode }
         >
           Sair
         </S.Logout>

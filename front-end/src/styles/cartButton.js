@@ -1,41 +1,41 @@
 import styled from 'styled-components';
 
 const Button = styled.button`
-  background: #23022e;
-  border: none;
-  border-radius: 8px;
+  background: ${(props) => (props.isDarkMode ? '#7D4F7D' : '#34AD58')};
+  border: solid 1px #ffffff40;
+  border-radius: 0.5rem;
   color: #fff;
-  font-size: 20px;
-  height: 40px;
-  width: 225px;
+  font-size: 2rem;
+  height: 5rem;
+  margin-bottom: 1rem;
+  width: 25rem;
 
-  @media(max-width: 1200px) {
+  span {
+    font-size: 2rem;
+  }
+
+  @media screen and (max-width: 720px) {
     position: fixed;
     bottom: 0;
   }
 
-  @media(max-width: 360px) {
-    font-size: 12px;
-    height: 30px;
-    width: 150px;
+  @media screen and (max-width: 440px) {
+    height: 3rem;
+    margin-bottom: 0.5rem;
+    width: 85%;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 15px;
-    height: 30px;
-    width: 175px;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    height: 3rem;
+    margin-bottom: 0.5rem;
+    width: 80%;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 18px;
-    height: 35px;
-    width: 180px;
-  }
-
-  @media(min-width: 541px) and (max-width: 720px) {
+  @media screen and (min-width: 541px) and (max-width: 720px) {
     font-size: 20px;
-    height: 35px;
-    width: 200px;
+    height: 3rem;
+    margin-bottom: 0;
+    width: 60%;
   }
 
   &:hover {
