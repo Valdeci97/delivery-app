@@ -6,25 +6,26 @@ export const Container = styled.form`
 `;
 
 export const Label = styled.label`
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
   display: flex;
   flex-direction: column;
-  font-size: 1.2rem;
+  font-size: 2rem;
   text-align: center;
 
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
+  @media screen and (max-width: 440px) {
+    font-size: 0.9rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.7rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 1.2rem;
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.8rem;
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 1.25rem;
   }
 
   @media(min-width: 681px) and (max-width: 800px) {
@@ -34,36 +35,41 @@ export const Label = styled.label`
 
 export const Select = styled.select`
   align-self: center;
-  background: #ddd;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.2rem;
+  background-color: ${(props) => (props.isDarkMode ? 'transparent' : '#ffffffcc')};
+  border: solid 1px #ffffff60;
+  border-radius: 0.5rem;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2rem;
   font-weight: 500;
-  height: 1.5rem;
+  height: 4rem;
   margin-top: 0.5rem;
-  text-align: center;
-  width: 12.5rem;
+  text-align: center;   
+  width: 100%;
 
   &:hover {
     cursor: pointer;
   }
 
-  @media(max-width: 440px) {
-    font-size: 0.5rem;
-    height: 1rem;
-    width: 5rem;
+  @media screen and (max-width: 360px) {
+    font-size: 1rem;
+    height: 2rem;
+    width: 80%;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.6rem;
-    height: 1rem;
-    width: 5.5rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.2rem;
+    height: 2rem;
+    width: 80%;
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.7rem;
-    height: 1.1rem;
-    width: 6rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 1.25rem;
+    height: 2.5rem;
+  }
+
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 1.4rem;
+    height: 3rem;
   }
 
   @media(min-width: 681px) and (max-width: 800px) {
@@ -75,54 +81,57 @@ export const Select = styled.select`
 
 export const Input = styled.input`
   align-self: center;
-  background: #ddd;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.25rem;
-  height: 1.5rem;
+  background-color: ${(props) => (props.isDarkMode ? 'transparent' : '#ffffffcc')};
+  border: solid 1px #ffffff60;
+  border-radius: 0.5rem;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2rem;
+  height: 4rem;
   margin-top: 0.5rem;
   text-align: center;
-  width: 12.5rem;
+  width: 100%;
 
   &::placeholder {
-    color: #000;
+    color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+    font-size: 2rem;
+  }
+
+  @media screen and (max-width: 360px) {
     font-size: 1rem;
-  }
-
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
-    height: 1rem;
-    width: 5rem;
+    height: 2rem;
+    width: 80%;
 
     &::placeholder {
-      font-size: 0.4rem;
+      font-size: 1rem;
     }
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
-    height: 1rem;
-    width: 5rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.2rem;
+    height: 2rem;
+    width: 80%;
 
     &::placeholder {
-      font-size: 0.45rem;
+      font-size: 1.2rem;
     }
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.7rem;
-    height: 1rem;
-    width: 5rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 1.25rem;
+    height: 2.5rem;
 
     &::placeholder {
-      font-size: 0.45rem;
+      font-size: 1.25rem;
     }
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.6rem;
-    height: 1.1rem;
-    width: 6.5rem;
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 1.4rem;
+    height: 3rem;
+
+    &::placeholder {
+      font-size: 1.4rem;
+    }
   }
 
   @media(min-width: 681px) and (max-width: 800px) {
@@ -153,22 +162,30 @@ export const FinishOrderContainer = styled.div`
 `;
 
 export const FinishOrderButton = styled.button`
-  background: #22023a;
-  border: none;
-  border-radius: 8px;
-  bottom: 1rem;
+  background-color: ${(props) => (props.isDarkMode ? '#7D4F7D' : '#34AD58aa')};
+  border: solid 1px #ffffff60;
+  border-radius: 0.5rem;
   color: #fff;
-  font-size: 1.2rem;
-  height: 2rem;
-  position: fixed;
-  width: 10rem;
-
-  &:disabled {
-    background: #ddd;
-    color: #000;
-  }
+  font-size: 2rem;
+  height: 4rem;
+  padding: 0.5rem;
 
   &:hover {
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 360px) {
+    font-size: 1rem;
+    height: 2.25rem;
+  }
+
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.25rem;
+    height: 2.5rem;
+  }
+
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 1.5rem;
+    height: 2.75rem;
   }
 `;

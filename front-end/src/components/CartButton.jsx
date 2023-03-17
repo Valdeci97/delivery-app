@@ -27,7 +27,6 @@ export default function CartButton() {
   return (
     <Button
       data-testid="customer_products__button-cart"
-      disabled={ cart.length === 0 }
       onClick={ () => navigate('/customer/checkout') }
       type="button"
       isDarkMode={ isDarkMode }

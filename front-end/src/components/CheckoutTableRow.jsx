@@ -3,9 +3,15 @@ import PropTypes from 'prop-types';
 import priceToReal from '../utils/helpers/priceToReal';
 import CustomerContext from '../context/CustomerContext';
 import { RemoveButton } from '../styles/checkout';
+import AppContext from '../context/AppContext';
+import trash from '../assets/trash.svg';
+import darkTrash from '../assets/dark-trash.svg';
 
 export default function CheckoutTableRow({ product, index }) {
   const { cart, setCart } = useContext(CustomerContext);
+  const { theme } = useContext(AppContext);
+
+  const isDarkMode = theme === 'dark';
 
   const { id, name, price, qty } = product;
   const unitPrice = parseFloat(price);
@@ -46,8 +52,8 @@ export default function CheckoutTableRow({ product, index }) {
       <td
         data-testid={ `customer_checkout__element-order-table-remove-${index}` }
       >
-        <RemoveButton type="button" onClick={ removeItem }>
-          Remover
+        <RemoveButton type="button" onClick={ removeItem } isDarkMode={ isDarkMode }>
+          <img src={ isDarkMode ? trash : darkTrash } alt="lata de lixo" />
         </RemoveButton>
       </td>
     </tr>

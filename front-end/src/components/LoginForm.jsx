@@ -56,7 +56,7 @@ export default function LoginForm() {
     }
 
     const { user, token } = userInfo;
-    setLocalStorageUser({ ...user, token });
+    setLocalStorageUser({ ...user, token: `Bearer ${token}` });
     handleRole(user.role);
   }
 

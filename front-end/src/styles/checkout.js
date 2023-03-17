@@ -9,108 +9,87 @@ export const Container = styled.section`
 
 export const OrderTitle = styled.h1`
   align-self: center;
-  font-size: 1.5rem;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2.5rem;
   font-weight: unset;
   margin-bottom: 1rem;
 
-  @media(max-width: 360px) {
-    font-size: 0.8rem;
+  @media screen and (max-width: 360px) {
+    font-size: 1.75rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.9rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 2rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 1rem;
-  }
-
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 1.1rem;
-  }
-
-  @media(min-width: 681px) and (max-width: 800px) {
-    font-size: 1.25rem;
-  }
-
-  @media(min-width: 801px) and (max-width: 1000px) {
-    font-size: 1.35rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 2.25rem;
   }
 `;
 
 export const OrderTotal = styled.h1`
   align-self: center;
-  background: #ddd;
-  border-radius: 4px;
-  color: #000;
+  border-radius: 0.5rem;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2rem;
   font-weight: 400;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   text-align: center;
-  width: 10rem;
+  width: 25%;
 
-  @media(max-width: 360px) {
-    font-size: 0.8rem;
-    width: 6rem;
+  span {
+    font-size: 2rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.9rem;
-    width: 6rem;
+  @media screen and (max-width: 360px) {
+    font-size: 1.5rem;
+    
+    span {
+      font-size: 1.5rem;
+    }
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 1rem;
-    width: 6.75rem;
-  }
-
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 1.1rem;
-    width: 7.5rem;
-  }
-
-  @media(min-width: 681px) and (max-width: 800px) {
-    font-size: 1.25rem;
-    width: 9rem;
-  }
-
-  @media(min-width: 801px) and (max-width: 1000px) {
-    font-size: 1.35rem;
-    width: 9.5rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.75rem;
+    
+    span {
+      font-size: 1.75rem;
+    }
   }
 `;
 
 export const TableContainer = styled.div`
   align-self: center;
-  border-radius: 4px;
-  box-shadow: 0.5px 0.5px 2.5px 0.75px #777;
+  border-radius: 0.5rem;
   display: flex;
   flex-direction: column;
   width: 90%;
 `;
 
 export const Table = styled.table`
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
   margin-top: 0.5rem;
   width: 100%;
 `;
 
 export const TableHead = styled.thead`
-  font-size: 1.5rem;
+  font-size: 5rem;
 
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
+  @media screen and (max-width: 360px) {
+    font-size: 2rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 2.25rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.7rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 2.5rem;
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.8rem;
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 3.25rem;
   }
 
   @media(min-width: 681px) and (max-width: 800px) {
@@ -123,23 +102,23 @@ export const TableHead = styled.thead`
 `;
 
 export const TableBody = styled.tbody`
-  font-size: 1.2rem;
+  font-size: 5rem;
   text-align: center;
 
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
+  @media screen and (max-width: 360px) {
+    font-size: 2rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 2.25rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.7rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 2.5rem;
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.8rem;
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 3.25rem;
   }
 
   @media(min-width: 681px) and (max-width: 800px) {
@@ -152,40 +131,55 @@ export const TableBody = styled.tbody`
 `;
 
 export const RemoveButton = styled.button`
-  background: #22023a;
-  border: none;
+  background-color: ${(props) => (props.isDarkMode ? '#7D4F7D' : '#34AD58aa')};
+  border: solid 1px #ffffff80;
   border-radius: 0.25rem;
   color: #fff;
-  font-size: 1.25rem;
-  height: 1.75rem;
-  width: 7rem;
+  height: 3.5rem;
+  width: 25%;
 
   &:hover {
     cursor: pointer;
   }
 
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
-    height: 1rem;
-    width: 2.25rem;
+  img {
+    width: 50%;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
-    height: 1rem;
-    width: 2.6rem;
+  @media screen and (max-width: 360px) {
+    height: 1.75rem;
+    width: 30%;
+
+    img {
+      width: 75%;
+    }
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.8rem;
-    height: 1.1rem;
-    width: 3.5rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    height: 2.5rem;
+    width: 30%;
+
+    img {
+      width: 75%;
+    }
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.9rem;
-    height: 1.2rem;
-    width: 4rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    height: 3rem;
+    width: 40%;
+
+    img {
+      width: 70%;
+    }
+  }
+
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    height: 3.5rem;
+    width: 35%;
+
+    img {
+      width: 60%;
+    }
   }
 
   @media(min-width: 681px) and (max-width: 800px) {
