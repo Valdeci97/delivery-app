@@ -8,66 +8,55 @@ export const Container = styled.div`
 
 export const Link = styled.a`
   align-items: center;
-  border-radius: 0.25rem;
-  box-shadow: 1px 1px 5px 2px #777;
-  color: black;
+  border: solid 1px ${(props) => (props.isDarkMode ? '#ffffff90' : '#000')};
+  border-radius: 0.5rem;
+  box-shadow: 0.2rem 0.2rem 0.25rem 0.1rem ${(props) => (props.isDarkMode ? '#ffffff60' : '#00000060')};
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
   display: flex;
-  font-size: 2rem;
   font-weight: bold;
-  height: 5rem;
   justify-content: space-evenly;
   margin-bottom: 1rem;
+  padding: 1rem 0;
   text-align: center;
   text-decoration: none;
-  width: 95%;
+  width: 90%;
+`;
 
-  @media(max-width: 440px) {
-    font-size: 1rem;
+export const OrderTextSpan = styled.span`
+  font-size: 2.5rem;
+
+  @media screen and (max-width: 440px) {
+    font-size: 1.25rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 1.2rem;
-  }
-
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 1.3rem;
-  }
-
-  @media(min-width: 681px) and (max-width: 800px) {
+  @media screen and (min-width: 441px) and (max-width: 540px) {
     font-size: 1.4rem;
   }
 
-  @media(min-width: 801px) and (max-width: 1000px) {
-    font-size: 1.5rem;
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 1.75rem;
   }
 
-  @media(min-width: 1001px) and (max-width: 1200px) {
-    font-size: 1.75rem;
+  @media screen and (min-width: 681px) and (max-width: 800px) {
+    font-size: 2rem;
+  }
+
+  @media screen and (min-width: 801px) and (max-width: 1000px) {
+    font-size: 2.25rem;
   }
 `;
 
 export const OrderInfo = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 30%;
 
-  p {
-    margin: 0 0.5rem;
-  }
-  
-  @media(max-width: 440px) {
-    p {
-      margin: 0 0.2rem;
-    }
+  @media screen and (max-width: 680px) {
+    justify-content: space-evenly;
+    width: 50%;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    p {
-      margin: 0 0.3rem;
-    }
-  }
-
-  @media(min-width: 541px) and (max-width: 680px) {
-    p {
-      margin: 0 0.4rem;
-    }
+  @media screen and (min-width: 681px) and (max-width: 1000px) {
+    width: 40%;
   }
 `;
