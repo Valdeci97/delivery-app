@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { localStorageUser } from '../utils/localStorage/localStorage';
@@ -8,12 +8,16 @@ import priceToReal from '../utils/helpers/priceToReal';
 import totalPrice from '../utils/helpers/totalPrice';
 import CustomerNavBar from '../components/CustomerNavBar';
 import * as S from '../styles/customerOrderDetails';
+import AppContext from '../context/AppContext';
 
 export default function CustomerOrderDetail() {
   const [order, setOrder] = useState({});
   const [showTable, setShowTable] = useState(false);
   const { token } = localStorageUser();
   const { id } = useParams();
+  const { theme } = useContext(AppContext);
+
+  const isDarkMode = theme === 'dark';
 
   const getOrderInfo = async () => {
     const apiResponse = await getCustomerOrderById(token, id);
@@ -49,37 +53,38 @@ export default function CustomerOrderDetail() {
   return (
     <>
       <CustomerNavBar />
-      <S.Details>Detalhe do Pedido</S.Details>
+      <S.Details isDarkMode={ isDarkMode }>Detalhes do Pedido</S.Details>
       <section>
         {
           showTable
           && (
             <S.OrderContainer>
-              <S.CompanyInfo>
-                <S.OrderId data-testid={ `${data}order-id` }>
+              <S.CompanyInfo isDarkMode={ isDarkMode }>
+                <S.OrderText data-testid={ `${data}order-id` }>
                   { `Pedido ${order.id}` }
-                </S.OrderId>
-                <div data-testid={ `${data}seller-name` }>
+                </S.OrderText>
+                <S.OrderText data-testid={ `${data}seller-name` }>
                   { order.seller.name }
-                </div>
-                <div data-testid={ `${data}order-date` }>
+                </S.OrderText>
+                <S.OrderText data-testid={ `${data}order-date` }>
                   { format(new Date(order.saleDate), 'dd/MM/yyyy') }
-                </div>
-                <div data-testid={ `${data}delivery-status` }>
+                </S.OrderText>
+                <S.OrderText data-testid={ `${data}delivery-status` }>
                   { order.status }
-                </div>
+                </S.OrderText>
                 <S.DeliveryButton
                   data-testid="customer_order_details__button-delivery-check"
                   disabled={ order.status !== 'Em Trânsito' }
                   onClick={ delivered }
                   type="button"
+                  isDarkMode={ isDarkMode }
                 >
                   Marcar como entregue
                 </S.DeliveryButton>
               </S.CompanyInfo>
               <DetailsTable cart={ order.products } />
-              <S.Price>
-                Total: R$
+              <S.Price isDarkMode={ isDarkMode }>
+                Total: R$&nbsp;
                 <span
                   data-testid="customer_order_details__element-order-total-price"
                 >

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import priceToReal from '../utils/helpers/priceToReal';
+import { TableData } from '../styles/OrderDetailsTable';
 
 export default function DetailsTableRow({ product, index }) {
   const { name, price, SaleProduct: { quantity } } = product;
@@ -9,31 +10,31 @@ export default function DetailsTableRow({ product, index }) {
 
   return (
     <tr>
-      <td
+      <TableData
         data-testid={ `customer_order_details__element-order-table-item-number-${index}` }
       >
         { index + 1 }
-      </td>
-      <td
+      </TableData>
+      <TableData
         data-testid={ `customer_order_details__element-order-table-name-${index}` }
       >
         { name }
-      </td>
-      <td
+      </TableData>
+      <TableData
         data-testid={ `customer_order_details__element-order-table-quantity-${index}` }
       >
         { quantity }
-      </td>
-      <td
+      </TableData>
+      <TableData
         data-testid={ `customer_order_details__element-order-table-unit-price-${index}` }
       >
         { priceToReal(unitPrice, true) }
-      </td>
-      <td
+      </TableData>
+      <TableData
         data-testid={ `customer_order_details__element-order-table-sub-total-${index}` }
       >
         { priceToReal(totalPrice, true) }
-      </td>
+      </TableData>
     </tr>
   );
 }

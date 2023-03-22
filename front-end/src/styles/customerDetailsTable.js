@@ -7,60 +7,36 @@ export const TableContainer = styled.div`
 `;
 
 export const Table = styled.table`
-  font-size: 1.25rem;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 10rem;
   margin-top: 0.25rem;
   width: 100%;
 
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
+  @media screen and (max-width: 360px) {
+    font-size: 3.75rem;
   }
 
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 5rem;
   }
 
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.7rem;
+  @media screen and (min-width: 441px) and (max-width: 540px) {
+    font-size: 5.5rem;
   }
 
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.75rem;
+  @media screen and (min-width: 541px) and (max-width: 680px) {
+    font-size: 5.75rem;
   }
 
-  @media(min-width: 681px) and (max-width: 760px) {
-    font-size: 0.9rem;
+  @media screen and (min-width: 681px) and (max-width: 800px) {
+    font-size: 6.25rem;
   }
 
-  @media(min-width: 761px) and (max-width: 940px) {
-    font-size: 1rem;
+  @media screen and (min-width: 801px) and (max-width: 1000px) {
+    font-size: 7rem;
   }
 `;
 
 export const TableBody = styled.tbody`
-  font-size: 1.25rem;
   text-align: center;
-
-  @media(max-width: 360px) {
-    font-size: 0.5rem;
-  }
-
-  @media(min-width: 361px) and (max-width: 440px) {
-    font-size: 0.6rem;
-  }
-
-  @media(min-width: 441px) and (max-width: 540px) {
-    font-size: 0.7rem;
-  }
-
-  @media(min-width: 541px) and (max-width: 680px) {
-    font-size: 0.75rem;
-  }
-
-  @media(min-width: 681px) and (max-width: 760px) {
-    font-size: 0.9rem;
-  }
-
-  @media(min-width: 761px) and (max-width: 940px) {
-    font-size: 1rem;
-  }
 `;
