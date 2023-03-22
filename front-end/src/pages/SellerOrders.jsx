@@ -3,7 +3,7 @@ import { localStorageUser } from '../utils/localStorage/localStorage';
 import { getSellerOrders } from '../utils/api/service';
 import SellerNavBar from '../components/SellerNavBar';
 import SellerOrderCard from '../components/SellerOrderCard';
-import { Container } from '../styles/sellerOrders';
+import { Container } from '../styles/orders';
 
 export default function SellerOrders() {
   const [orders, setOrders] = useState([]);

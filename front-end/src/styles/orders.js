@@ -25,8 +25,12 @@ export const Link = styled.a`
 export const OrderTextSpan = styled.span`
   font-size: 2.5rem;
 
-  @media screen and (max-width: 440px) {
-    font-size: 1.25rem;
+  @media screen and (max-width: 360px) {
+    font-size: 1rem;
+  }
+
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.15rem;
   }
 
   @media screen and (min-width: 441px) and (max-width: 540px) {
@@ -38,11 +42,11 @@ export const OrderTextSpan = styled.span`
   }
 
   @media screen and (min-width: 681px) and (max-width: 800px) {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   @media screen and (min-width: 801px) and (max-width: 1000px) {
-    font-size: 2.25rem;
+    font-size: 2.1rem;
   }
 `;
 
@@ -57,6 +61,6 @@ export const OrderInfo = styled.div`
   }
 
   @media screen and (min-width: 681px) and (max-width: 1000px) {
-    width: 40%;
+    width: 35%;
   }
 `;
