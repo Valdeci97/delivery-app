@@ -1,12 +1,15 @@
-import React from 'react';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import DetailsTableHead from './DetailsTableHead';
 import SellerDetailsTableRow from './SellerDetailsTableRow';
 import { Table } from '../styles/sellerOrderDetails';
+import AppContext from '../context/AppContext';
 
 export default function DetailsTable({ cart }) {
+  const { theme } = useContext(AppContext);
+
   return (
-    <Table>
+    <Table isDarkMode={ theme === 'dark' }>
       <DetailsTableHead />
       <tbody>
         { cart.map((product, index) => (

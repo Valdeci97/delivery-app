@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { localStorageUser } from '../utils/localStorage/localStorage';
@@ -12,12 +12,18 @@ import totalPrice from '../utils/helpers/totalPrice';
 import SellerNavBar from '../components/SellerNavBar';
 import SellerDetailsTable from '../components/SellerDetailsTable';
 import * as S from '../styles/sellerOrderDetails';
+import AppContext from '../context/AppContext';
 
 export default function SellerOrderDetail() {
   const [order, setOrder] = useState({});
   const [showTable, setShowTable] = useState(false);
   const { token } = localStorageUser();
   const { id } = useParams();
+  const { theme } = useContext(AppContext);
+  const isDarkMode = theme === 'dark';
+  const DATE_PATTERN = 'dd/MM/yyyy';
+  const NOT_STARTED_ORDER = 'PEDIDO NÃO INICIADO';
+  const ALREADY_DELIVERED_ORDER = 'PEDIDO JÁ ENVIADO';
 
   const getOrderInfo = async () => {
     const apiResponse = await getSellerOrderById(token, id);
@@ -31,8 +37,6 @@ export default function SellerOrderDetail() {
   useEffect(() => {
     getOrderInfo();
   }, []);
-
-  const TEST_ID_PREFIX = 'seller_order_details__element-order-details-label-';
 
   const formatProducts = () => order.products
     .map(({ id: productId, name, price, SaleProduct: { quantity } }) => (
@@ -58,47 +62,45 @@ export default function SellerOrderDetail() {
   return (
     <>
       <SellerNavBar />
-      <S.Details>Detalhe do Pedido</S.Details>
+      <S.Details isDarkMode={ isDarkMode }>Detalhes do Pedido</S.Details>
       <section>
         {
           showTable
           && (
-            <S.OrderContainer>
-              <S.LeftSide>
-                <span data-testid={ `${TEST_ID_PREFIX}order-id` }>
+            <S.OrderContainer isDarkMode={ isDarkMode }>
+              <S.LeftSide isDarkMode={ isDarkMode }>
+                <S.SellerOrderSpan>
                   { `Id: ${order.id}` }
-                </span>
-                <span data-testid={ `${TEST_ID_PREFIX}order-date` }>
-                  { format(new Date(order.saleDate), 'dd/MM/yyyy') }
-                </span>
-                <span data-testid={ `${TEST_ID_PREFIX}delivery-status` }>
+                </S.SellerOrderSpan>
+                <S.SellerOrderSpan>
+                  { format(new Date(order.saleDate), DATE_PATTERN) }
+                </S.SellerOrderSpan>
+                <S.SellerOrderSpan>
                   { order.status }
-                </span>
-                <S.Button
-                  data-testid="seller_order_details__button-preparing-check"
+                </S.SellerOrderSpan>
+                <S.StartOrderButton
+                  isDarkMode={ isDarkMode }
                   disabled={ order.status !== 'Pendente' }
                   onClick={ preparing }
                   type="button"
                 >
                   PREPARAR PEDIDO
-                </S.Button>
-                <S.Button
-                  data-testid="seller_order_details__button-dispatch-check"
+                </S.StartOrderButton>
+                <S.DeliveryOrderButton
+                  isDarkMode={ isDarkMode }
                   disabled={ order.status !== 'Preparando' }
                   onClick={ dispatch }
                   type="button"
+                  content={ order.status === 'Pendente'
+                    ? NOT_STARTED_ORDER : ALREADY_DELIVERED_ORDER }
                 >
-                  SAIU PARA ENTREGA
-                </S.Button>
+                  ENVIAR PEDIDO
+                </S.DeliveryOrderButton>
               </S.LeftSide>
               <SellerDetailsTable cart={ order.products } />
-              <S.Price>
-                Total: R$
-                <span
-                  data-testid="seller_order_details__element-order-total-price"
-                >
-                  { getTotalPrice() }
-                </span>
+              <S.Price isDarkMode={ isDarkMode }>
+                Total: R$&nbsp;
+                { getTotalPrice() }
               </S.Price>
             </S.OrderContainer>
           )
