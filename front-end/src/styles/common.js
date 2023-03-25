@@ -9,11 +9,38 @@ export const Label = styled.label`
   gap: 0.5rem;
   width: 80%;
 
+  @media screen and (max-width: 700px) {
+    font-size: 1.5rem;
+  }
+`;
+
+export const Select = styled.select`
+  background-color: #ffffff60;
+  border: solid 1px #ffffff40;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-size: 2rem;
+  height: 4rem;
+  width: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
+
   @media screen and (max-width: 440px) {
     font-size: 1.5rem;
   }
+`;
 
-  @media screen and (min-width: 541px) and (max-width: 700px) {
+export const Option = styled.option`
+  color: #000000;
+  font-size: 2rem;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 440px) {
     font-size: 1.5rem;
   }
 `;

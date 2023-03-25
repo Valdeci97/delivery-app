@@ -4,14 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import AppContext from '../context/AppContext';
 import ToastMessage from '../utils/helpers/toastifyMessage';
 import { registerFormInitialValue } from '../utils/constants/registerFormInitialValue';
-import { handleChange } from '../utils/helpers/handleChange';
 import { register } from '../utils/api/service';
 import { toastResponse } from '../utils/toast';
 import * as S from '../styles/register';
 import proto from '../assets/register.svg';
-import { registerProps } from '../utils/constants/props';
+import { registerProps, roleProps } from '../utils/constants/props';
 import Input from './Input';
 import RegisterPasswordInput from './RegisterPasswordInput';
+import RoleInput from './RoleInput';
+import { validatePassword, validateEmail } from '../utils/helpers/validateFormField';
+import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
 
 export default function RegisterForm() {
   const [state, setState] = useState(registerFormInitialValue);
@@ -20,15 +22,26 @@ export default function RegisterForm() {
 
   const navigate = useNavigate();
 
-  const validatePassword = (pass) => {
-    const PASSWORD_BODY = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])/;
-    const PASSWORD_LENGTH = /(?:([\w$*&@#])(?!\1)){8,64}/;
-    const regex = new RegExp(PASSWORD_BODY.source + PASSWORD_LENGTH.source);
-    return !regex.test(pass);
+  const MIN_NAME_LENGTH = 3;
+
+  const checkFields = () => {
+    if (state.name.length < MIN_NAME_LENGTH) {
+      return { message: 'Preencha todos os campos' };
+    }
+    const email = checkInvalidFields(state.email, validateEmail, 'e-mail');
+    const password = checkInvalidFields(state.password);
+    const message = email.message || password.message;
+    return { message };
   };
 
   const sendRegisterInfo = async () => {
     const toastTheme = theme === 'dark' ? 'light' : 'dark';
+    const { message } = checkFields();
+    if (message) {
+      const { response } = toastResponse(message, toastTheme);
+      return response();
+    }
+
     if (validatePassword(state.password)) {
       const { response } = toastResponse(<ToastMessage />, toastTheme);
       return response();
@@ -39,7 +52,9 @@ export default function RegisterForm() {
     const userInfo = await register(state.name, state.email, state.password, state.role);
 
     if (!userInfo) {
-      const { response } = toastResponse('Usuário já cadastrado', toastTheme, 'error');
+      const {
+        response,
+      } = toastResponse('Pessoa usuária já cadastrada', toastTheme, 'error');
       return response();
     }
 
@@ -75,16 +90,12 @@ export default function RegisterForm() {
           stateHandler={ setState }
           value={ state.password }
         />
-        <S.Label htmlFor="role">
-          Tipo
-          <S.SelectRole
-            id="role"
-            onChange={ ({ target }) => handleChange(target, state, setState) }
-          >
-            <S.RoleOption id="cliente">cliente</S.RoleOption>
-            <S.RoleOption id="vendedor">vendedor</S.RoleOption>
-          </S.SelectRole>
-        </S.Label>
+        <RoleInput
+          title={ roleProps.user.title }
+          prevState={ state }
+          stateHandler={ setState }
+          options={ roleProps.user.options }
+        />
         <S.Button
           data-testid="common_register__button-register"
           type="button"

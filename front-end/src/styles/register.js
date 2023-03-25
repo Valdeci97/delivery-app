@@ -12,7 +12,7 @@ export const RegisterForm = styled.form`
   align-items: center;
   background-color: ${(props) => (props.isDarkMode ? '#ffffff20' : '#00000040')};
   border-radius: 1rem;
-  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};      
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
