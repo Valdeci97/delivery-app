@@ -2,6 +2,11 @@ import mail from '../../assets/mail-icon.svg';
 import lock from '../../assets/lock-icon.svg';
 import user from '../../assets/user-icon.svg';
 
+const userOptions = [
+  { text: 'cliente', value: 'customer' },
+  { text: 'vendedor', value: 'seller' },
+];
+
 export const loginProps = {
   emailInput: {
     id: 'email',
@@ -31,4 +36,15 @@ export const registerProps = {
   },
   emailInput: { ...loginProps.emailInput },
   passwordInput: { ...loginProps.passwordInput },
+};
+
+export const roleProps = {
+  user: { title: 'Tipo', options: userOptions },
+  admin: {
+    title: 'Tipo',
+    options: [
+      ...userOptions,
+      { text: 'Administrador', value: 'administrator' },
+    ],
+  },
 };
