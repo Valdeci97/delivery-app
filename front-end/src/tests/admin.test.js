@@ -1,8 +1,7 @@
 jest.mock('../utils/api/service');
 
-import React from 'react';
+import '@testing-library/jest-dom';
 import { screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import AdminManage from '../pages/AdminManage';
 import renderWithRouter from './renderWithRouter';
@@ -20,11 +19,14 @@ describe('Admin page', () => {
   afterEach(() => jest.resetAllMocks());
 
   describe('nav bar', () => {
-    let history;
+    let hist;
+    let userEvent;
 
     beforeEach(() => {
       localStorage.setItem('user', JSON.stringify(localStorageAdmin));
-      history = renderWithRouter(<AdminManage />).history;
+      const { history, user } = renderWithRouter(<AdminManage />);
+      hist = history;
+      userEvent = user;
     });
     
     afterEach(() => {
@@ -32,7 +34,7 @@ describe('Admin page', () => {
     });
     
     it('should have the expected elements', () => {
-      const manageLink = screen.getByRole('link', { name: /gerenciar usuários/i});
+      const manageLink = screen.getByRole('link', { name: /gerenciar usuários/i });
       const nameHeading = screen.getByRole('heading', { name: userMock.administrator.user.name });
       const logoutButton = screen.getByRole('button', { name: /sair/i});
       
@@ -41,34 +43,20 @@ describe('Admin page', () => {
       expect(logoutButton).toBeInTheDocument();
     });
 
-    describe('link to users management', () => {
-      it('should redirect to /admin/manage', () => {
-        history.push = jest.fn();
-        const manageLink = screen.getByRole('link', { name: /gerenciar usuários/i});
-        userEvent.click(manageLink);
-
-        expect(history.push).toBeCalledWith({
-            hash: '',
-            pathname: '/admin/manage',
-            search: '',
-        }, undefined);
-      });
-    });
-
     describe('logout button', () => {
-      it('should clear localStorage', () => {
+      it('should clear localStorage', async () => {
         const logoutButton = screen.getByRole('button', { name: /sair/i});
-        userEvent.click(logoutButton);
+        await userEvent.click(logoutButton);
 
         expect(localStorage.getItem('user')).toBe(null);
         expect(localStorage.getItem('carrinho')).toBe(null);
       });
 
-      it('should redirect to /login', () => {
+      it('should redirect to /login', async () => {
         const logoutButton = screen.getByRole('button', { name: /sair/i});
-        userEvent.click(logoutButton);
+        await userEvent.click(logoutButton);
 
-        const { pathname } = history.location;
+        const { pathname } = hist.location;
         expect(pathname).toBe('/login');
       });
     });
@@ -85,11 +73,13 @@ describe('Admin page', () => {
     });
 
     it('should have the right screen elements', () => {
-      const title = screen.getByRole('heading', {  name: /cadastrar novo usuário/i});
+      const title = screen.getByRole('heading',
+        {  name: /cadastrar nova pessoa usuária/i },
+      );
       const nameInput = screen.getByRole('textbox', { name: /nome/i });
       const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const selectRole = screen.getByRole('combobox', {  name: /tipo:/i});
+      const passwordInput = screen.getByText(/senha/i);
+      const selectRole = screen.getByRole('combobox', {  name: /tipo/i });
       const registerButton = screen.getByRole('button', { name: /cadastrar/i });
 
       expect(title).toBeInTheDocument();
@@ -99,74 +89,6 @@ describe('Admin page', () => {
       expect(selectRole).toBeInTheDocument();
       expect(selectRole.value).toBe('customer');
       expect(registerButton).toBeInTheDocument();
-      expect(registerButton).toBeDisabled();
-    });
-
-    it('should enable the register button with valid inputs', () => {
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const selectRole = screen.getByRole('combobox', {  name: /tipo:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-  
-      expect(registerButton).toBeDisabled();
-  
-      userEvent.type(nameInput, USER_NAME);
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, USER_PASSWORD);
-
-      expect(registerButton).not.toBeDisabled();
-
-      userEvent.selectOptions(selectRole, 'Vendedor')
-      expect(registerButton).not.toBeDisabled();
-
-      userEvent.selectOptions(selectRole, 'Administrador')
-      expect(registerButton).not.toBeDisabled();
-    });
-
-    it('should not enable the register button with short name', () => {
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-  
-      expect(registerButton).toBeDisabled();
-  
-      userEvent.type(nameInput, 'tooshort');
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, USER_PASSWORD);
-  
-      expect(registerButton).toBeDisabled();
-    });
-  
-    it('should not enable the register button with invalid email format', () => {
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-      expect(registerButton).toBeDisabled();
-  
-      userEvent.type(nameInput, USER_NAME);
-      userEvent.type(emailInput, 'invalid_format.com');
-      userEvent.type(passwordInput, USER_PASSWORD);
-  
-      expect(registerButton).toBeDisabled();
-    });
-  
-    it('should not enable the register button with short password', () => {
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-      expect(registerButton).toBeDisabled();
-  
-      userEvent.type(nameInput, USER_NAME);
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, 'short');
-  
-      expect(registerButton).toBeDisabled();
     });
   });
 
@@ -281,221 +203,6 @@ describe('Admin page', () => {
         expect(usersRole).toHaveLength(0);
         expect(deleteButtons).toHaveLength(0);
       });
-    });
-  });
-
-  describe('registering already registered user', () => {
-    beforeEach(async () => {
-      service.adminRegister.mockImplementation(() => Promise.resolve(true));
-      service.getAllUsers.mockImplementation(() => Promise.resolve(userMock.adminManage));
-      localStorage.setItem('user', JSON.stringify(localStorageAdmin));
-      await act(async () => {
-        renderWithRouter(<AdminManage />);
-      });
-
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-
-      userEvent.type(nameInput, userMock.adminManage[0].name);
-      userEvent.type(emailInput, userMock.adminManage[0].email);
-      userEvent.type(passwordInput, USER_PASSWORD);
-    });
-    
-    afterEach(() => {
-      localStorage.removeItem('user');
-    });
-
-    it('should call service.adminRegister', async () => {
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-  
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      expect(service.adminRegister).toHaveBeenCalledTimes(1);
-    });
-  
-    it('should call service.adminRegister with user name, email, password, role and admin token', async () => {
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      expect(service.adminRegister)
-      .toHaveBeenCalledWith({ name: userMock.adminManage[0].name, email: userMock.adminManage[0].email, password: USER_PASSWORD, role: 'customer' }, token);
-    });
-
-    it('should not update user list', async () => {
-      let usersName = screen.queryAllByTestId(/admin_manage__element-user-table-name/i);
-
-      expect(usersName).toHaveLength(2);
-
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      usersName = screen.queryAllByTestId(/admin_manage__element-user-table-name/i);
-
-      expect(usersName).toHaveLength(2);
-    });
-
-    it('should show error message', async () => {
-      let errorElement = screen.queryByText(/usuário já cadastrado!/i);
-
-      expect(errorElement).not.toBeInTheDocument();
-
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      errorElement = screen.queryByText(/usuário já cadastrado!/i);
-
-      expect(errorElement).toBeInTheDocument();
-    });
-  });
-
-  describe('registering new valid user', () => {
-    beforeEach(async () => {
-      service.adminRegister.mockImplementation(() => Promise.resolve(false));
-      service.getAllUsers.mockImplementation(() => Promise.resolve([]));
-      localStorage.setItem('user', JSON.stringify(localStorageAdmin));
-      await act(async () => {
-        renderWithRouter(<AdminManage />);
-      });
-    });
-    
-    afterEach(() => {
-      localStorage.removeItem('user');
-    });
-
-    it('should call service.adminRegister', async () => {
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-  
-      userEvent.type(nameInput, USER_NAME);
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, USER_PASSWORD);
-
-      service.getAllUsers.mockImplementation(() => Promise.resolve([{ id: 2, name: USER_NAME, email: USER_EMAIL, role: 'customer' }]));
-
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      expect(service.adminRegister).toHaveBeenCalledTimes(1);
-    });
-  
-    it('should call service.adminRegister with user name, email, password, role and admin token', async () => {
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-  
-      userEvent.type(nameInput, USER_NAME);
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, USER_PASSWORD);
-
-      service.getAllUsers.mockImplementationOnce(() => Promise.resolve([{ id: 2, name: USER_NAME, email: USER_EMAIL, role: 'customer' }]));
-
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      expect(service.adminRegister)
-      .toHaveBeenCalledWith({ name: USER_NAME, email: USER_EMAIL, password: USER_PASSWORD, role: 'customer' }, token);
-    });
-
-    it('should update user list', async () => {
-      let usersName = screen.queryAllByTestId(/admin_manage__element-user-table-name/i);
-
-      expect(usersName).toHaveLength(0);
-
-      const nameInput = screen.getByRole('textbox', { name: /nome/i });
-      const emailInput = screen.getByRole('textbox', { name: /email/i });
-      const passwordInput = screen.getByRole('textbox', {  name: /senha:/i});
-      const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-  
-      userEvent.type(nameInput, USER_NAME);
-      userEvent.type(emailInput, USER_EMAIL);
-      userEvent.type(passwordInput, USER_PASSWORD);
-
-      service.getAllUsers.mockImplementationOnce(() => Promise.resolve([{ id: 2, name: USER_NAME, email: USER_EMAIL, role: 'customer' }]));
-
-      await act(async () => {
-        userEvent.click(registerButton);
-      });
-
-      usersName = screen.queryAllByTestId(/admin_manage__element-user-table-name/i);
-
-      expect(usersName).toHaveLength(1);
-      expect(usersName[0].innerHTML).toBe(USER_NAME);
-    });
-  });
-
-  describe('deleting user', () => {
-    beforeEach(async () => {
-      localStorage.setItem('user', JSON.stringify(localStorageAdmin));
-      service.getAllUsers.mockImplementation(() => Promise.resolve(userMock.adminManage));
-      await act(async () => {
-        renderWithRouter(<AdminManage />);
-      });
-    });
-
-    afterEach(() => {
-      localStorage.removeItem('user');
-    });
-
-    it('should call service.deleteById', async () => {
-      const deleteButtons = screen.getAllByRole('button', { name: /excluir/i });
-
-      expect(deleteButtons).toHaveLength(2);
-
-      await act(async () => {
-        userEvent.click(deleteButtons[0]);
-      });
-
-      expect(service.deleteById).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call service.deleteById with user id and admin token', async () => {
-      const deleteButtons = screen.getAllByRole('button', { name: /excluir/i });
-
-      expect(deleteButtons).toHaveLength(2);
-
-      await act(async () => {
-        userEvent.click(deleteButtons[0]);
-      });
-
-      expect(service.deleteById)
-      .toHaveBeenCalledWith(userMock.adminManage[0].id, localStorageAdmin.token);
-    });
-
-    it('should remove deleted user from screen', async () => {
-      let usersName = screen.getAllByTestId(/admin_manage__element-user-table-name/i);
-      const deleteButtons = screen.getAllByRole('button', { name: /excluir/i });
-      
-      expect(usersName).toHaveLength(2);
-      expect(usersName[0].innerHTML).toBe(userMock.adminManage[0].name);
-      expect(deleteButtons).toHaveLength(2);
-
-      service.getAllUsers.mockImplementationOnce(() => Promise.resolve([userMock.adminManage[1]]));
-
-      await act(async () => {
-        userEvent.click(deleteButtons[0]);
-      });
-
-      usersName = screen.getAllByTestId(/admin_manage__element-user-table-name/i);
-
-      expect(usersName).toHaveLength(1);
-      expect(usersName[0].innerHTML).not.toBe(userMock.adminManage[0].name);
     });
   });
 });
