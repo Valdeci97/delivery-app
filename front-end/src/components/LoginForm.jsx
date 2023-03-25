@@ -13,6 +13,8 @@ import * as S from '../styles/login';
 import beer from '../assets/beer.svg';
 import { loginProps } from '../utils/constants/props';
 import LoginPasswordInput from './LoginPasswordInput';
+import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
+import { validateEmail } from '../utils/helpers/validateFormField';
 
 export default function LoginForm() {
   const [state, setState] = useState(loginFormInitialValue);
@@ -33,17 +35,17 @@ export default function LoginForm() {
   }
 
   function checkFields() {
-    if (state.email === '' || state.password === '') {
-      return true;
-    }
-    return false;
+    const email = checkInvalidFields(state.email, validateEmail, 'e-mail');
+    const password = checkInvalidFields(state.password);
+    const message = email.message || password.message;
+    return { message };
   }
 
   async function sendLoginInfo() {
-    const isEmpty = checkFields();
+    const { message } = checkFields();
     const toastTheme = theme === 'dark' ? 'light' : 'dark';
-    if (isEmpty) {
-      const { response } = toastResponse('Preencha todos os campos', toastTheme);
+    if (message) {
+      const { response } = toastResponse(message, toastTheme);
       return response();
     }
 
