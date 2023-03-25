@@ -1,104 +1,103 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
 import { adminRegister } from '../utils/api/service';
 import { localStorageUser } from '../utils/localStorage/localStorage';
 import * as S from '../styles/adminManage';
+import {
+  adminRegisterFormInitialValue,
+} from '../utils/constants/adminRegisterFormInitialValue';
+import AppContext from '../context/AppContext';
+import Input from './Input';
+import RegisterPasswordInput from './RegisterPasswordInput';
+import { registerProps, roleProps } from '../utils/constants/props';
+import RoleInput from './RoleInput';
+import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
+import { validateEmail, validatePassword } from '../utils/helpers/validateFormField';
+import { toastResponse } from '../utils/toast';
+import ToastMessage from '../utils/helpers/toastifyMessage';
 
 export default function AdminRegisterForm({ update }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('customer');
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [state, setState] = useState(adminRegisterFormInitialValue);
+  const { theme } = useContext(AppContext);
+  const isDarkMode = theme === 'dark';
 
-  useEffect(() => {
-    const validateInputs = () => {
-      const regex = /^[a-z0-9._]+@[a-z0-9]+\.[a-z]+\.?[a-z]+$/;
-      const minPasswordLength = 6;
-      const minNameLength = 12;
+  const MIN_NAME_LENGTH = 3;
 
-      setIsDisabled(
-        password.length < minPasswordLength
-        || !regex.test(email)
-        || name.length < minNameLength,
-      );
-    };
-
-    validateInputs();
-  }, [password, email, name]);
+  const checkFields = () => {
+    if (state.name.length < MIN_NAME_LENGTH) {
+      return { message: 'Preencha todos os campos' };
+    }
+    const email = checkInvalidFields(state.email, validateEmail, 'e-mail');
+    const password = checkInvalidFields(state.password);
+    const message = email.message || password.message;
+    return { message };
+  };
 
   const registerUser = async () => {
-    const t = localStorageUser().token;
-    const user = { name, email, password, role };
-    const response = await adminRegister(user, t);
-    if (response) {
-      return toast
-        .error('Usuário já cadastrado', { theme: 'dark', position: 'top-center' });
+    const toastTheme = isDarkMode ? 'light' : 'dark';
+    const { message } = checkFields();
+    if (message) {
+      const { response } = toastResponse(message, toastTheme);
+      return response();
     }
 
-    setName('');
-    setEmail('');
-    setPassword('');
-    setRole('customer');
+    if (validatePassword(state.password)) {
+      const { response } = toastResponse(<ToastMessage />, toastTheme);
+      return response();
+    }
+
+    const t = localStorageUser().token;
+    const user = {
+      name: state.name,
+      email: state.email,
+      password: state.password,
+      role: state.role,
+    };
+    const alreadyRegistered = await adminRegister(user, t);
+    if (alreadyRegistered) {
+      const {
+        response,
+      } = toastResponse('Pessoa usuária já cadastrada', toastTheme, 'error');
+      return response();
+    }
+
+    setState(adminRegisterFormInitialValue);
     update();
   };
 
   return (
     <S.Container>
-      <S.Title>Cadastrar novo usuário</S.Title>
-      <S.Form>
-        <S.Label htmlFor="name-input">
-          Nome
-          <S.Input
-            data-testid="admin_manage__input-name"
-            id="name-input"
-            name="name"
-            value={ name }
-            onChange={ ({ target }) => setName(target.value) }
-            type="text"
-          />
-        </S.Label>
-        <S.Label htmlFor="email-input">
-          Email
-          <S.Input
-            data-testid="admin_manage__input-email"
-            id="email-input"
-            name="email"
-            value={ email }
-            onChange={ ({ target }) => setEmail(target.value) }
-            type="text"
-          />
-        </S.Label>
-        <S.Label htmlFor="password-input">
-          Senha
-          <S.Input
-            data-testid="admin_manage__input-password"
-            id="password-input"
-            name="password"
-            value={ password }
-            onChange={ ({ target }) => setPassword(target.value) }
-            type="text"
-          />
-        </S.Label>
-        <S.Label htmlFor="role-input">
-          Tipo
-          <S.Select
-            id="role-input"
-            value={ role }
-            onChange={ ({ target }) => setRole(target.value) }
-            data-testid="admin_manage__select-role"
-          >
-            <option value="customer">Cliente</option>
-            <option value="seller">Vendedor</option>
-            <option value="administrator">Administrador</option>
-          </S.Select>
-        </S.Label>
+      <S.Title isDarkMode={ isDarkMode }>Cadastrar nova pessoa usuária</S.Title>
+      <S.Form isDarkMode={ isDarkMode }>
+        <Input
+          static={ registerProps.nameInput }
+          prevState={ state }
+          stateHandler={ setState }
+          value={ state.name }
+        />
+        <Input
+          static={ registerProps.emailInput }
+          prevState={ state }
+          stateHandler={ setState }
+          value={ state.email }
+        />
+        <RegisterPasswordInput
+          static={ registerProps.passwordInput }
+          prevState={ state }
+          stateHandler={ setState }
+          value={ state.password }
+        />
+        <RoleInput
+          title={ roleProps.admin.title }
+          prevState={ state }
+          stateHandler={ setState }
+          options={ roleProps.admin.options }
+        />
         <S.Button
           data-testid="admin_manage__button-register"
           type="button"
-          disabled={ isDisabled }
           onClick={ registerUser }
+          isDarkMode={ isDarkMode }
         >
           CADASTRAR
         </S.Button>

@@ -7,57 +7,56 @@ export const Container = styled.section`
 `;
 
 export const Title = styled.h1`
-  margin-bottom: 0.3rem;
+  color: ${(props) => (props.isDarkMode ? '#fff' : '#000')};
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+
+  @media screen and (max-width: 360px) {
+    font-size: 1.25rem;
+  }
+
+  @media screen and (min-width: 361px) and (max-width: 440px) {
+    font-size: 1.4rem;
+  }
 `;
 
 export const Form = styled.form`
+  align-self: center;
+  align-items: center;
+  background-color: ${(props) => (props.isDarkMode ? '#ffffff20' : '#00000040')};
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
-`;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem 0;
+  width: 35%;
 
-export const Label = styled.label`
-  display: flex;
-  flex-direction: column;
-  font-size: 1.2rem;
-  margin-bottom: 0.3rem;
-  text-align: center;
-`;
+  @media screen and (max-width: 540px) {
+    width: 80%;
+  }
 
-export const Input = styled.input`
-  border: solid 1px #000;
-  border-radius: 0.25rem;
-  height: 1.5rem;
-  text-align: center;
-`;
+  @media screen and (min-width: 541px) and (max-width: 800px) {
+    width: 65%;
+  }
 
-export const Select = styled.select`
-  border: solid 1px #000;
-  border-radius: 0.25rem;
-  height: 1.5rem;
-  text-align: center;
-
-  &:hover {
-    cursor: pointer;
+  @media screen and (min-width: 801px) and (max-width: 1000px) {
+    width: 50%;
   }
 `;
 
 export const Button = styled.button`
-  align-self: center;
-  background: #22023a;
-  border: none;
-  border-radius: 0.25rem;
+  background-color: ${(props) => (props.isDarkMode ? '#7D4F7D' : '#34AD58aa')};
+  border: solid 1px #ffffff60;
+  border-radius: 0.5rem;
   color: #fff;
-  font-size: 1rem;
-  height: 1.5rem;
-  margin-top: 0.4rem;
-  width: 7.5rem;
+  cursor: pointer;
+  font-size: 2rem;
+  padding: 0.5rem;
+  width: 50%;
 
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:disabled {
-    background: #ada8b6;
-    color: #000;
+  @media screen and (max-width: 360px) {
+    font-size: 1.25rem;
+    width: 40%;
   }
 `;
