@@ -2,12 +2,14 @@ const NAME = 'valid_user_name';
 const EMAIL = 'user@user.com';
 const TOKEN = 'valid_token';
 
+const user = {
+  name: NAME,
+  email: EMAIL,
+  role: 'customer',
+};
+
 const customer = {
-  user: {
-    name: NAME,
-    email: EMAIL,
-    role: 'customer',
-  },
+  user,
   token: TOKEN,
 };
 
@@ -51,10 +53,16 @@ const sellers = [
   },
 ];
 
+const customerLocalStorage = {
+  ...user,
+  token: TOKEN,
+};
+
 export default {
   customer,
   seller,
   administrator,
   adminManage,
   sellers,
+  customerLocalStorage,
 };

@@ -1,80 +1,82 @@
 jest.mock('../utils/api/service');
 
-import React from 'react';
+import '@testing-library/jest-dom';
 import { screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
 import CustomerOrderDetail from '../pages/CustomerOrderDetail';
 import renderWithRouter from './renderWithRouter';
 import * as service from '../utils/api/service';
 import userMock from './mocks/user';
 import orders from './mocks/orders';
 
-const { user, token } = userMock.customer;
-const localStorageCustomer = { ...user, token };
+const { customerLocalStorage } = userMock;
 
 describe('Customer Orders page', () => {
   afterEach(() => jest.resetAllMocks());
 
-  // describe('nav bar', () => {
-  //   let history;
-
-  //   beforeEach(() => {
-  //     localStorage.setItem('user', JSON.stringify(localStorageCustomer));
-  //     history = renderWithRouter(<CustomerOrderDetail />).history;
-  //   });
-    
-  //   afterEach(() => {
-  //     localStorage.removeItem('user');
-  //   });
-    
-  //   it('should have the expected elements', () => {
-  //     const ordersLink = screen.getByRole('link', { name: /pedidos/i});
-  //     const nameHeading = screen.getByRole('heading', { name: userMock.seller.user.name });
-  //     const logoutButton = screen.getByRole('button', { name: /sair/i});
+  describe('nav bar', () => {
+    it('should have the expected elements', () => {
+      localStorage.setItem('user', JSON.stringify(customerLocalStorage));
+      renderWithRouter(<CustomerOrderDetail />);
+      const [ordersLink] = screen.getAllByRole('link', { name: /pedidos/i });
+      const nameHeading = screen.getByRole('heading', { name: userMock.seller.user.name });
+      const logoutButton = screen.getByRole('button', { name: /sair/i });
       
-  //     expect(ordersLink).toBeInTheDocument();
-  //     expect(nameHeading).toBeInTheDocument();
-  //     expect(logoutButton).toBeInTheDocument();
-  //   });
+      expect(ordersLink).toBeInTheDocument();
+      expect(nameHeading).toBeInTheDocument();
+      expect(logoutButton).toBeInTheDocument();
 
-  //   describe('link to orders', () => {
-  //     it('should redirect to /seller/orders', () => {
-  //       history.push = jest.fn();
-  //       const ordersLink = screen.getByRole('link', { name: /pedidos/i});
-  //       userEvent.click(ordersLink);
+      localStorage.removeItem('user');
+    });
+  });
 
-  //       expect(history.push).toBeCalledWith({
-  //           hash: '',
-  //           pathname: '/seller/orders',
-  //           search: '',
-  //       }, undefined);
-  //     });
-  //   });
+  describe('link to orders', () => {
+    it('should redirect to /seller/orders', async () => {
+      localStorage.setItem('user', JSON.stringify(customerLocalStorage));
+      const { history, user } = renderWithRouter(<CustomerOrderDetail />);
+      history.push = jest.fn();
+      const [ordersLink] = screen.getAllByRole('link', { name: /pedidos/i });
+      await user.click(ordersLink);
 
-  //   describe('logout button', () => {
-  //     it('should clear localStorage', () => {
-  //       const logoutButton = screen.getByRole('button', { name: /sair/i});
-  //       userEvent.click(logoutButton);
+      expect(history.push).toBeCalledWith({
+          hash: '',
+          pathname: '/customer/orders',
+          search: '',
+      }, undefined);
+    });
+    localStorage.removeItem('user');
+  });
 
-  //       expect(localStorage.getItem('user')).toBe(null);
-  //       expect(localStorage.getItem('carrinho')).toBe(null);
-  //     });
+  describe('logout button', () => {
+    beforeEach(() => {
+      localStorage.setItem('user', JSON.stringify(customerLocalStorage));
+    });
 
-  //     it('should redirect to /login', () => {
-  //       const logoutButton = screen.getByRole('button', { name: /sair/i});
-  //       userEvent.click(logoutButton);
+    afterEach(() => {
+      localStorage.removeItem('user');
+    });
 
-  //       const { pathname } = history.location;
-  //       expect(pathname).toBe('/login');
-  //     });
-  //   });
-  // });
+    it('should clear localStorage', async () => {
+      const { user } = renderWithRouter(<CustomerOrderDetail />);
+
+      const logoutButton = screen.getByRole('button', { name: /sair/i });
+      await user.click(logoutButton);
+
+      expect(localStorage.getItem('user')).toBe(null);
+      expect(localStorage.getItem('carrinho')).toBe(null);
+    });
+
+    it('should redirect to /login', async () => {
+      const { history, user } = renderWithRouter(<CustomerOrderDetail />);
+      const logoutButton = screen.getByRole('button', { name: /sair/i });
+      await user.click(logoutButton);
+      expect(history.location.pathname).toBe('/login');
+    });
+  });
 
   describe('order details', () => {
     beforeEach(async () => {
       service.getCustomerOrderById.mockImplementation(() => Promise.resolve(orders.customerOrderDetails));
-      localStorage.setItem('user', JSON.stringify(localStorageCustomer));
+      localStorage.setItem('user', JSON.stringify(customerLocalStorage));
       await act(async () => {
         renderWithRouter(<CustomerOrderDetail />);
       });
@@ -89,22 +91,25 @@ describe('Customer Orders page', () => {
     });
 
     it('should have the expected elements', () => {
-      const pageTitle = screen.getByRole('heading', {  name: /detalhe do pedido/i});
+      const pageTitle = screen.getByRole('heading', {
+        name: /detalhes do pedido/i,
+        level: 1,
+      });
 
       const orderId = screen.getByTestId('customer_order_details__element-order-details-label-order-id');
       const sellerName = screen.getByText(/fulana pereira/i)
       const orderDate = screen.getByText(/17\/06\/2022/i);
       const orderStatus = screen.getByText(/pendente/i);
 
-      const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+      const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
-      const itemColumnHeader = screen.getByRole('columnheader', {  name: /item/i});
-      const descriptionColumnHeader = screen.getByRole('columnheader', {  name: /descrição/i});
-      const quantityColumnHeader = screen.getByRole('columnheader', {  name: /quantidade/i});
-      const unitPriceColumnHeader = screen.getByRole('columnheader', {  name: /valor unitário/i});
-      const subTotalColumnHeader = screen.getByRole('columnheader', {  name: /sub-total/i});
+      const itemColumnHeader = screen.getByRole('columnheader', { name: /item/i });
+      const descriptionColumnHeader = screen.getByRole('columnheader', { name: /descrição/i });
+      const quantityColumnHeader = screen.getByRole('columnheader', { name: /quantidade/i });
+      const unitPriceColumnHeader = screen.getByRole('columnheader', { name: /valor unitário/i });
+      const subTotalColumnHeader = screen.getByRole('columnheader', { name: /sub-total/i });
 
-      const orderTotalPriceHeading = screen.getByRole('heading', {  name: /total: r\$/i});
+      const orderTotalPriceHeading = screen.getByRole('heading', { name: /total: r\$/i });
       const orderTotalPriceSpan = screen.getByText(/26,90/i)
 
       expect(pageTitle).toBeInTheDocument();
@@ -161,7 +166,7 @@ describe('Customer Orders page', () => {
 
   describe('when order is', () => {
     beforeEach(() => {
-      localStorage.setItem('user', JSON.stringify(localStorageCustomer));
+      localStorage.setItem('user', JSON.stringify(customerLocalStorage));
     });
     
     afterEach(() => {
@@ -175,7 +180,7 @@ describe('Customer Orders page', () => {
           renderWithRouter(<CustomerOrderDetail />);
         });
 
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i });
 
         expect(deliveredButton).toBeDisabled();
       });
@@ -188,31 +193,33 @@ describe('Customer Orders page', () => {
           renderWithRouter(<CustomerOrderDetail />);
         });
 
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
         expect(deliveredButton).toBeDisabled();
       });
     });
 
     describe('dispatched', () => {
+      let event;
       beforeEach(async () => {
         service.getCustomerOrderById.mockImplementation(() => Promise.resolve({ ...orders.customerOrderDetails, status: 'Em Trânsito' }));
         await act(async () => {
-          renderWithRouter(<CustomerOrderDetail />);
+          const { user } = renderWithRouter(<CustomerOrderDetail />);
+          event = user;
         });
       });
 
       it('button should be enabled', async () => {
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
         expect(deliveredButton).not.toBeDisabled();
       });
 
       it('clicking on button should call service.markAsDelivered', async () => {
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
         await act(async () => {
-          userEvent.click(deliveredButton);
+          await event.click(deliveredButton);
         });
 
         expect(service.markAsDelivered).toHaveBeenCalledTimes(1);
@@ -220,7 +227,7 @@ describe('Customer Orders page', () => {
 
       it('clicking on button should change order status', async () => {
         const orderStatus = screen.queryByText(/em trânsito/i);
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
         expect(orderStatus).toBeInTheDocument();
         expect(orderStatus.innerHTML).toBe('Em Trânsito');
@@ -228,19 +235,19 @@ describe('Customer Orders page', () => {
         service.getCustomerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.customerOrderDetails, status: 'Entregue' }));
 
         await act(async () => {
-          userEvent.click(deliveredButton);
+          await event.click(deliveredButton);
         });
 
         expect(orderStatus.innerHTML).toBe('Entregue');
       });
 
       it('clicking on button should disable it', async () => {
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
         service.getCustomerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.customerOrderDetails, status: 'Entregue' }));
 
         await act(async () => {
-          userEvent.click(deliveredButton);
+          await event.click(deliveredButton);
         });
         
         expect(deliveredButton).toBeDisabled();
@@ -256,7 +263,7 @@ describe('Customer Orders page', () => {
       });
 
       it('button should be disabled', () => {
-        const deliveredButton = screen.getByRole('button', {  name: /marcar como entregue/i});
+        const deliveredButton = screen.getByRole('button', { name: /marcar como entregue/i });
 
         expect(deliveredButton).toBeDisabled();
       });
@@ -266,20 +273,20 @@ describe('Customer Orders page', () => {
   describe('order details', () => {
     it('should not show table if request returns undefined', async () => {
       service.getCustomerOrderById.mockImplementation(() => Promise.resolve());
-      localStorage.setItem('user', JSON.stringify(localStorageCustomer));
+      localStorage.setItem('user', JSON.stringify(customerLocalStorage));
       await act(async () => {
         renderWithRouter(<CustomerOrderDetail />);
       });
 
-      const pageTitle = screen.getByRole('heading', {  name: /detalhe do pedido/i});
+      const pageTitle = screen.getByRole('heading', { name: /detalhes do pedido/i });
 
-      const deliveredButton = screen.queryByRole('button', {  name: /marcar como entregue/i});
+      const deliveredButton = screen.queryByRole('button', { name: /marcar como entregue/i });
 
-      const itemColumnHeader = screen.queryByRole('columnheader', {  name: /item/i});
-      const descriptionColumnHeader = screen.queryByRole('columnheader', {  name: /descrição/i});
-      const quantityColumnHeader = screen.queryByRole('columnheader', {  name: /quantidade/i});
-      const unitPriceColumnHeader = screen.queryByRole('columnheader', {  name: /valor unitário/i});
-      const subTotalColumnHeader = screen.queryByRole('columnheader', {  name: /sub-total/i});
+      const itemColumnHeader = screen.queryByRole('columnheader', {  name: /item/i });
+      const descriptionColumnHeader = screen.queryByRole('columnheader', { name: /descrição/i });
+      const quantityColumnHeader = screen.queryByRole('columnheader', { name: /quantidade/i });
+      const unitPriceColumnHeader = screen.queryByRole('columnheader', { name: /valor unitário/i });
+      const subTotalColumnHeader = screen.queryByRole('columnheader', { name: /sub-total/i });
 
       expect(pageTitle).toBeInTheDocument();
 
