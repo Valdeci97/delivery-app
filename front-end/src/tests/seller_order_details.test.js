@@ -1,8 +1,7 @@
 jest.mock('../utils/api/service');
 
-import React from 'react';
+import '@testing-library/jest-dom';
 import { screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import SellerOrderDetail from '../pages/SellerOrderDetail';
 import renderWithRouter from './renderWithRouter';
@@ -17,11 +16,14 @@ describe('Seller Orders page', () => {
   afterEach(() => jest.resetAllMocks());
 
   describe('nav bar', () => {
-    let history;
+    let userHistory;
+    let userAction;
 
     beforeEach(() => {
       localStorage.setItem('user', JSON.stringify(localStorageSeller));
-      history = renderWithRouter(<SellerOrderDetail />).history;
+      const { history, user }= renderWithRouter(<SellerOrderDetail />);
+      userHistory = history;
+      userAction = user;
     });
     
     afterEach(() => {
@@ -29,9 +31,9 @@ describe('Seller Orders page', () => {
     });
     
     it('should have the expected elements', () => {
-      const ordersLink = screen.getByRole('link', { name: /pedidos/i});
+      const ordersLink = screen.getByRole('link', { name: /pedidos/i });
       const nameHeading = screen.getByRole('heading', { name: userMock.seller.user.name });
-      const logoutButton = screen.getByRole('button', { name: /sair/i});
+      const logoutButton = screen.getByRole('button', { name: /sair/i });
       
       expect(ordersLink).toBeInTheDocument();
       expect(nameHeading).toBeInTheDocument();
@@ -39,12 +41,12 @@ describe('Seller Orders page', () => {
     });
 
     describe('link to orders', () => {
-      it('should redirect to /seller/orders', () => {
-        history.push = jest.fn();
-        const ordersLink = screen.getByRole('link', { name: /pedidos/i});
-        userEvent.click(ordersLink);
+      it('should redirect to /seller/orders', async () => {
+        userHistory.push = jest.fn();
+        const ordersLink = screen.getByRole('link', { name: /pedidos/i });
+        await userAction.click(ordersLink);
 
-        expect(history.push).toBeCalledWith({
+        expect(userHistory.push).toBeCalledWith({
             hash: '',
             pathname: '/seller/orders',
             search: '',
@@ -53,19 +55,19 @@ describe('Seller Orders page', () => {
     });
 
     describe('logout button', () => {
-      it('should clear localStorage', () => {
-        const logoutButton = screen.getByRole('button', { name: /sair/i});
-        userEvent.click(logoutButton);
+      it('should clear localStorage', async () => {
+        const logoutButton = screen.getByRole('button', { name: /sair/i });
+        await userAction.click(logoutButton);
 
         expect(localStorage.getItem('user')).toBe(null);
         expect(localStorage.getItem('carrinho')).toBe(null);
       });
 
-      it('should redirect to /login', () => {
+      it('should redirect to /login', async () => {
         const logoutButton = screen.getByRole('button', { name: /sair/i});
-        userEvent.click(logoutButton);
+        await userAction.click(logoutButton);
 
-        const { pathname } = history.location;
+        const { pathname } = userHistory.location;
         expect(pathname).toBe('/login');
       });
     });
@@ -89,22 +91,22 @@ describe('Seller Orders page', () => {
     });
 
     it('should have the expected elements', () => {
-      const pageTitle = screen.getByRole('heading', {  name: /detalhe do pedido/i});
+      const pageTitle = screen.getByRole('heading', { name: /detalhes do pedido/i });
 
-      const orderId = screen.getByTestId('seller_order_details__element-order-details-label-order-id');
+      const orderId = screen.getByText(/Id:/gi);
       const orderDate = screen.getByText(/16\/06\/2022/i);
       const orderStatus = screen.getByText(/pendente/i);
 
-      const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
-      const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+      const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
+      const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
-      const itemColumnHeader = screen.getByRole('columnheader', {  name: /item/i});
-      const descriptionColumnHeader = screen.getByRole('columnheader', {  name: /descrição/i});
-      const quantityColumnHeader = screen.getByRole('columnheader', {  name: /quantidade/i});
-      const unitPriceColumnHeader = screen.getByRole('columnheader', {  name: /valor unitário/i});
-      const subTotalColumnHeader = screen.getByRole('columnheader', {  name: /sub-total/i});
+      const itemColumnHeader = screen.getByRole('columnheader', { name: /item/i });
+      const descriptionColumnHeader = screen.getByRole('columnheader', { name: /descrição/i });
+      const quantityColumnHeader = screen.getByRole('columnheader', { name: /quantidade/i });
+      const unitPriceColumnHeader = screen.getByRole('columnheader', { name: /valor unitário/i });
+      const subTotalColumnHeader = screen.getByRole('columnheader', { name: /sub-total/i });
 
-      const orderTotalPriceHeading = screen.getByRole('heading', {  name: /total: r\$/i});
+      const orderTotalPriceHeading = screen.getByText(/total: r\$/gi);
       const orderTotalPriceSpan = screen.getByText(/26,90/i)
 
       expect(pageTitle).toBeInTheDocument();
@@ -169,30 +171,33 @@ describe('Seller Orders page', () => {
     });
     
     describe('when order is pending', () => {
+      let userAction;
       beforeEach(async () => {
         service.getSellerOrderById.mockImplementation(() => Promise.resolve(orders.sellerOrderDetails));
         await act(async () => {
-          renderWithRouter(<SellerOrderDetail />);
+          const { user } = renderWithRouter(<SellerOrderDetail />);
+          userAction = user;
         });
       });
 
       it('prepare button should be enabled', () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
         expect(preparingButton).not.toBeDisabled();
       });
 
       it('dispatch button should be disabled', () => {
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         expect(dispatchedButton).toBeDisabled();
       });
 
       it('clicking on prepare button should call service.markAsPreparing', async () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        service.markAsDelivered.mockImplementation(() => Promise.resolve());
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
         await act(async () => {
-          userEvent.click(preparingButton);
+          await userAction.click(preparingButton);
         });
 
         expect(service.markAsPreparing).toHaveBeenCalledTimes(1);
@@ -203,40 +208,40 @@ describe('Seller Orders page', () => {
 
         expect(orderStatus).toBeInTheDocument();
 
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
         service.getSellerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Preparando' }));
 
         await act(async () => {
-          userEvent.click(preparingButton);
+          await userAction.click(preparingButton);
         });
         
         expect(orderStatus.innerHTML).toBe('Preparando');
       });
 
       it('clicking on prepare button should disable it', async () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
         service.getSellerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Preparando' }));
 
         await act(async () => {
-          userEvent.click(preparingButton);
+          await userAction.click(preparingButton);
         });
         
         expect(preparingButton).toBeDisabled();
       });
 
       it('clicking on prepare button should enable dispatched button', async () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         expect(dispatchedButton).toBeDisabled();
 
         service.getSellerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Preparando' }));
 
         await act(async () => {
-          userEvent.click(preparingButton);
+          await userAction.click(preparingButton);
         });
         
         expect(dispatchedButton).not.toBeDisabled();
@@ -244,30 +249,32 @@ describe('Seller Orders page', () => {
     });
 
     describe('when order is being prepared', () => {
+      let userAction;
       beforeEach(async () => {
         service.getSellerOrderById.mockImplementation(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Preparando' }));
         await act(async () => {
-          renderWithRouter(<SellerOrderDetail />);
+          const { user } = renderWithRouter(<SellerOrderDetail />);
+          userAction = user;
         });
       });
 
       it('prepare button should be disabled', () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
         expect(preparingButton).toBeDisabled();
       });
 
       it('dispatch button should be enabled', () => {
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         expect(dispatchedButton).not.toBeDisabled();
       });
 
       it('clicking on dispatch button should call service.markAsDispatched', async () => {
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         await act(async () => {
-          userEvent.click(dispatchedButton);
+          await userAction.click(dispatchedButton);
         });
 
         expect(service.markAsDispatched).toHaveBeenCalledTimes(1);
@@ -278,40 +285,40 @@ describe('Seller Orders page', () => {
 
         expect(orderStatus).toBeInTheDocument();
 
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         service.getSellerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Em Trânsito' }));
 
         await act(async () => {
-          userEvent.click(dispatchedButton);
+          await userAction.click(dispatchedButton);
         });
         
         expect(orderStatus.innerHTML).toBe('Em Trânsito');
       });
 
       it('clicking on dispatch button should disable it', async () => {
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i});
 
         service.getSellerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Em Trânsito' }));
 
         await act(async () => {
-          userEvent.click(dispatchedButton);
+          await userAction.click(dispatchedButton);
         });
         
         expect(dispatchedButton).toBeDisabled();
       });
 
       it('clicking on dispatch button should not enable prepare button', async () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         expect(preparingButton).toBeDisabled();
 
         service.getSellerOrderById.mockImplementationOnce(() => Promise.resolve({ ...orders.sellerOrderDetails, status: 'Em Trânsito' }));
 
         await act(async () => {
-          userEvent.click(dispatchedButton);
+          await userAction.click(dispatchedButton);
         });
         
         expect(preparingButton).toBeDisabled();
@@ -327,13 +334,13 @@ describe('Seller Orders page', () => {
       });
 
       it('prepare button should be disabled', () => {
-        const preparingButton = screen.getByRole('button', {  name: /preparar pedido/i});
+        const preparingButton = screen.getByRole('button', { name: /preparar pedido/i });
 
         expect(preparingButton).toBeDisabled();
       });
 
       it('dispatch button should be disabled', () => {
-        const dispatchedButton = screen.getByRole('button', {  name: /saiu para entrega/i});
+        const dispatchedButton = screen.getByRole('button', { name: /enviar pedido/i });
 
         expect(dispatchedButton).toBeDisabled();
       });

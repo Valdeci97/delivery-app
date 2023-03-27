@@ -2,7 +2,6 @@ jest.mock('../utils/api/service');
 
 import '@testing-library/jest-dom';
 import { screen, act, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import CustomerOrders from '../pages/CustomerOrders';
 import renderWithRouter from './renderWithRouter';

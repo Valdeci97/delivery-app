@@ -32,53 +32,6 @@ describe('Test Register page without navigation', () => {
   });
 });
 
-// describe('Test Register page with navigation', () => {
-//   let userAction;
-//   let hist;
-//   describe('as customer', () => {
-//     beforeEach(async () => {
-//       const { history, user } = renderWithRouter(<Register />);
-//       userAction = user;
-//       hist = history;
-//       hist.push = jest.fn();
-//     });
-  
-//     afterEach(() => { localStorage.removeItem('user') })
-  
-//     // it.only('should call service.register', async () => {
-//     //   const nameInput = screen.getByPlaceholderText(/seu nome/i);
-//     //   const emailInput = screen.getByRole('textbox', { name: /email/i });
-//     //   const passwordInput = screen.getByLabelText(/senha/i);
-//     //   const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-
-//     //   await service.register.mockResolvedValue(userMock.customer);
-
-//     //   await userAction.type(emailInput, USER_EMAIL);
-//     //   await userAction.type(passwordInput, USER_PASSWORD);
-//     //   await userAction.type(nameInput, USER_NAME);
-//     //   await userAction.click(registerButton);
-
-//       // await act(async () => {
-//       //   expect(service.register).toHaveBeenCalled();
-//       // });
-//     // });
-  
-//     // it('should call service.register with user name, email and password', () => {
-//     //   expect(service.register)
-//     //   .toHaveBeenCalledWith(USER_NAME, USER_EMAIL, USER_PASSWORD);
-//     // });
-  
-//     it('should redirect to /customer/products', async () => {
-//       const registerButton = screen.getByRole('button', { name: /cadastrar/i });
-//       await userAction.click(registerButton);
-
-//       await waitFor(() => {
-//         expect(hist.pathname).toBe('/register');
-//       });
-//     });
-//   });
-// });
-
 describe('registering already registered user', () => {
   it('should show error message', async () => {
     service.register.mockImplementation(() => Promise.resolve(undefined));
