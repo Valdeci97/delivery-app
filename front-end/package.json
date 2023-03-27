@@ -19,7 +19,6 @@
     "lint:styles": "stylelint **/*.css --config .stylelintrc.json --ignore-disables --allow-empty-input"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "5.16.2",
     "@testing-library/react": "12.1.4",
     "axios": "^0.27.2",
     "date-fns": "^2.28.0",
@@ -33,6 +32,7 @@
     "web-vitals": "2.1.4"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
     "eslint-config-trybe-frontend": "1.2.3",
     "react-icons": "^4.4.0",
