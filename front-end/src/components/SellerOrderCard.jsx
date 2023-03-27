@@ -29,7 +29,7 @@ export default function SellerOrderCard({ order }) {
           { price }
         </S.OrderTextSpan>
       </S.OrderInfo>
-      <S.OrderTextSpan>
+      <S.OrderTextSpan data-testid="seller_orders__element-card-address">
         { `${order.deliveryAddress}, ${order.deliveryNumber}` }
       </S.OrderTextSpan>
     </S.Link>

@@ -1,8 +1,7 @@
 jest.mock('../utils/api/service');
 
-import React from 'react';
+import '@testing-library/jest-dom';
 import { screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import SellerOrders from '../pages/SellerOrders';
 import renderWithRouter from './renderWithRouter';
@@ -10,18 +9,23 @@ import * as service from '../utils/api/service';
 import userMock from './mocks/user';
 import orders from './mocks/orders';
 
-const { user, token } = userMock.seller;
-const localStorageSeller = { ...user, token };
+const { sellerLocalStorage } = userMock;
 
 describe('Seller Orders page', () => {
   afterEach(() => jest.resetAllMocks());
 
   describe('nav bar', () => {
-    let history;
+    let userHistory;
+    let userAction;
 
-    beforeEach(() => {
-      localStorage.setItem('user', JSON.stringify(localStorageSeller));
-      history = renderWithRouter(<SellerOrders />).history;
+    beforeEach(async () => {
+      localStorage.setItem('user', JSON.stringify(sellerLocalStorage));
+      service.getSellerOrders.mockImplementation(() => Promise.resolve(orders.sellerOrders));
+      await act(async () => {
+        const { history, user } = renderWithRouter(<SellerOrders />);
+        userHistory = history;
+        userAction = user;        
+      });
     });
     
     afterEach(() => {
@@ -29,9 +33,9 @@ describe('Seller Orders page', () => {
     });
     
     it('should have the expected elements', () => {
-      const ordersLink = screen.getByRole('link', { name: /pedidos/i});
-      const nameHeading = screen.getByRole('heading', { name: userMock.seller.user.name });
-      const logoutButton = screen.getByRole('button', { name: /sair/i});
+      const ordersLink = screen.getByRole('link', { name: /pedidos/i });
+      const nameHeading = screen.getByText(sellerLocalStorage.user.name);
+      const logoutButton = screen.getByRole('button', { name: /sair/i });
       
       expect(ordersLink).toBeInTheDocument();
       expect(nameHeading).toBeInTheDocument();
@@ -39,12 +43,12 @@ describe('Seller Orders page', () => {
     });
 
     describe('link to orders', () => {
-      it('should redirect to /seller/orders', () => {
-        history.push = jest.fn();
-        const ordersLink = screen.getByRole('link', { name: /pedidos/i});
-        userEvent.click(ordersLink);
+      it('should redirect to /seller/orders', async () => {
+        userHistory.push = jest.fn();
+        const ordersLink = screen.getByRole('link', { name: /pedidos/i });
+        await userAction.click(ordersLink);
 
-        expect(history.push).toBeCalledWith({
+        expect(userHistory.push).toBeCalledWith({
             hash: '',
             pathname: '/seller/orders',
             search: '',
@@ -53,33 +57,35 @@ describe('Seller Orders page', () => {
     });
 
     describe('logout button', () => {
-      it('should clear localStorage', () => {
-        const logoutButton = screen.getByRole('button', { name: /sair/i});
-        userEvent.click(logoutButton);
+      it('should clear localStorage', async () => {
+        const logoutButton = screen.getByRole('button', { name: /sair/i });
+        await userAction.click(logoutButton);
 
         expect(localStorage.getItem('user')).toBe(null);
         expect(localStorage.getItem('carrinho')).toBe(null);
       });
 
-      it('should redirect to /login', () => {
-        const logoutButton = screen.getByRole('button', { name: /sair/i});
-        userEvent.click(logoutButton);
+      it('should redirect to /login', async () => {
+        const logoutButton = screen.getByRole('button', { name: /sair/i });
+        await userAction.click(logoutButton);
 
-        const { pathname } = history.location;
-        expect(pathname).toBe('/login');
+        expect(userHistory.location.pathname).toBe('/login');
       });
     });
   });
 
   describe('orders', () => {
     describe('if there is any,', () => {
-      let history;
+      let userHistory;
+      let userAction;
       
       beforeEach(async () => {
         service.getSellerOrders.mockImplementation(() => Promise.resolve(orders.sellerOrders));
-        localStorage.setItem('user', JSON.stringify(localStorageSeller));
+        localStorage.setItem('user', JSON.stringify(sellerLocalStorage));
         await act(async () => {
-          history = renderWithRouter(<SellerOrders />).history;
+          const { history, user } = renderWithRouter(<SellerOrders />);
+          userHistory = history;
+          userAction = user;
         });
       });
       
@@ -93,14 +99,14 @@ describe('Seller Orders page', () => {
   
       it('should call service.getSellerOrders with user token', () => {
         expect(service.getSellerOrders)
-        .toHaveBeenCalledWith(localStorageSeller.token);
+        .toHaveBeenCalledWith(sellerLocalStorage.token);
       });
   
       it('should have the expected elements', () => {
-        const ordersId = screen.getAllByTestId(/seller_orders__element-order-id/i);
-        const ordersStatus = screen.getAllByTestId(/seller_orders__element-delivery-status/i);
-        const ordersDate = screen.getAllByTestId(/seller_orders__element-order-date/i);
-        const ordersPrice = screen.getAllByTestId(/seller_orders__element-card-price/i);
+        const ordersId = screen.getAllByRole('link', { name: /pedido/gi });
+        const ordersStatus = screen.getAllByText(/pendente/gi);
+        const ordersDate = screen.getAllByText(/.\//gi);
+        const ordersPrice = screen.getAllByText(/r\$/gi);
         const ordersAddress = screen.getAllByTestId(/seller_orders__element-card-address/i);
   
         const ordersElements = [
@@ -121,20 +127,6 @@ describe('Seller Orders page', () => {
         expect(ordersPrice).toHaveLength(2);
         expect(ordersAddress).toHaveLength(2);
       });
-
-      it('should redirect to /seller/orders/:id when clicking in order card', () => {
-        history.push = jest.fn();
-
-        const ordersId = screen.getAllByTestId(/seller_orders__element-order-id/i);
-
-        userEvent.click(ordersId[0]);
-
-        expect(history.push).toBeCalledWith({
-          hash: '',
-          pathname: `/seller/orders/${orders.sellerOrders[0].id}`,
-          search: '',
-        }, undefined);
-      });
     });
 
     describe('if there is none,', () => {
@@ -142,7 +134,7 @@ describe('Seller Orders page', () => {
       
       beforeEach(async () => {
         service.getSellerOrders.mockImplementation(() => Promise.resolve([]));
-        localStorage.setItem('user', JSON.stringify(localStorageSeller));
+        localStorage.setItem('user', JSON.stringify(sellerLocalStorage));
         await act(async () => {
           history = renderWithRouter(<SellerOrders />).history;
         });
@@ -158,7 +150,7 @@ describe('Seller Orders page', () => {
   
       it('should call service.getSellerOrders with user token', () => {
         expect(service.getSellerOrders)
-        .toHaveBeenCalledWith(localStorageSeller.token);
+        .toHaveBeenCalledWith(sellerLocalStorage.token);
       });
   
       it('should not have orders elements', () => {

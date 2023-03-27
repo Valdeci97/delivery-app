@@ -58,6 +58,15 @@ const customerLocalStorage = {
   token: TOKEN,
 };
 
+const sellerLocalStorage = {
+  user: {
+    name: NAME,
+    email: EMAIL,
+    role: 'seller',
+  },
+  token: TOKEN,
+};
+
 export default {
   customer,
   seller,
@@ -65,4 +74,5 @@ export default {
   adminManage,
   sellers,
   customerLocalStorage,
+  sellerLocalStorage,
 };
