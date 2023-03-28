@@ -37,7 +37,7 @@ export default function BasicNavBar({ links, dataTestIds }) {
           data-testid={ dataTestIds.name }
           isDarkMode={ isDarkMode }
         >
-          { localStorageUser().user.name }
+          { localStorageUser().name }
         </S.Title>
         <S.Logout
           data-testid={ dataTestIds.button }

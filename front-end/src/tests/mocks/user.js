@@ -59,11 +59,9 @@ const customerLocalStorage = {
 };
 
 const sellerLocalStorage = {
-  user: {
-    name: NAME,
-    email: EMAIL,
-    role: 'seller',
-  },
+  name: NAME,
+  email: EMAIL,
+  role: 'seller',
   token: TOKEN,
 };
 

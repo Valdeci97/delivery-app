@@ -1,7 +1,7 @@
 jest.mock('../utils/api/service');
 
 import '@testing-library/jest-dom';
-import { screen, act, waitFor } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 
 import CustomerOrders from '../pages/CustomerOrders';
 import renderWithRouter from './renderWithRouter';
@@ -87,9 +87,6 @@ describe('Customer orders page', () => {
 
   describe('orders', () => {
     describe('if there is any,', () => {
-      let userHistory;
-      let event;
-      
       beforeEach(async () => {
         service.customerOrders.mockImplementation(() => Promise.resolve(orders.customerOrders));
         localStorage.setItem('user', JSON.stringify(customerLocalStorage));

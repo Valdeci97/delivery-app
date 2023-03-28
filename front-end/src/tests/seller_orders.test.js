@@ -34,7 +34,7 @@ describe('Seller Orders page', () => {
     
     it('should have the expected elements', () => {
       const ordersLink = screen.getByRole('link', { name: /pedidos/i });
-      const nameHeading = screen.getByText(sellerLocalStorage.user.name);
+      const nameHeading = screen.getByText(sellerLocalStorage.name);
       const logoutButton = screen.getByRole('button', { name: /sair/i });
       
       expect(ordersLink).toBeInTheDocument();
