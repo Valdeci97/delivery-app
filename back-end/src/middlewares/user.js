@@ -2,6 +2,8 @@ const { emailSchema, passwordSchema, nameSchema } = require('../utils/joiSchemas
 const { getUserByParam } = require('../services/user');
 const { verifyToken } = require('../utils/jwt');
 
+const ACCESS_DENIED = 'Access denied';
+
 const getToken = (auth) => {
   if (!auth) return '';
   const [, token] = auth.split(' ');
@@ -52,7 +54,7 @@ const authMiddleware = (req, res, next) => {
   const auth = getToken(req.headers.authorization);
   const verify = verifyToken(auth);
   if (verify.message) return res.status(401).json({ message: verify.message });
-  if (verify.role !== 'administrator') return res.status(403).json({ message: 'Access denied' });
+  if (verify.role !== 'administrator') return res.status(403).json({ message: ACCESS_DENIED });
   next();
 };
 
@@ -68,7 +70,15 @@ const validateToken = (req, res, next) => {
   const auth = getToken(req.headers.authorization);
   const token = verifyToken(auth);
   if (token.message) return res.status(401).json({ message: token.message });
-  if (token.role !== 'seller') return res.status(403).json({ message: 'Access denied' });
+  if (token.role !== 'seller') return res.status(403).json({ message: ACCESS_DENIED });
+  next();
+};
+
+const validateDeliveredOrder = (req, res, next) => {
+  const auth = getToken(req.headers.authorization);
+  const token = verifyToken(auth);
+  if (token.message) return res.status(401).json({ message: token.message });
+  if (token.role !== 'customer') return res.status(403).json({ message: ACCESS_DENIED });
   next();
 };
 
@@ -80,4 +90,5 @@ module.exports = {
   authMiddleware,
   getEmailFromToken,
   validateToken,
+  validateDeliveredOrder,
 };
