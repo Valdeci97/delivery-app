@@ -1,15 +1,18 @@
 import axios from 'axios';
 
+const BASE_URL = process.env.REACT_APP_API_URL || 'http:localhost:3001';
+
+const FIVE_SECONDS_IN_MS = 5000;
 const CONTENT_TYPE = 'application/json';
+const ADMIN_MANAGE_ROUTE = '/admin/manage';
+const CUSTOMER_ORDERS_ROUTE = '/customer/orders';
+const SELLER_ORDERS_ROUTE = '/seller/orders';
+
+axios.defaults.baseURL = BASE_URL;
+axios.defaults.timeout = FIVE_SECONDS_IN_MS;
 
 export async function login(email, password) {
-  const user = await axios.post(
-    'http://localhost:3001/login',
-    {
-      email,
-      password,
-    },
-  )
+  const user = await axios.post('/login', { email, password })
     .then((result) => result.data)
     .catch((error) => console.log(error));
 
@@ -17,15 +20,8 @@ export async function login(email, password) {
 }
 
 export async function register(name, email, password, role) {
-  const user = await axios.post(
-    'http://localhost:3001/register',
-    {
-      name,
-      email,
-      password,
-      role,
-    },
-  )
+  const user = await axios.post('/register',
+    { name, email, password, role })
     .then((result) => result.data)
     .catch((error) => console.log(error));
 
@@ -33,9 +29,9 @@ export async function register(name, email, password, role) {
 }
 
 export async function getProducts() {
-  const fetchProducts = await axios.get(
-    'http://localhost:3001/customer/products',
-  ).then((result) => result.data).catch((error) => console.log(error));
+  const fetchProducts = await axios.get('/customer/products')
+    .then((result) => result.data)
+    .catch((error) => console.log(error));
 
   return fetchProducts;
 }
@@ -46,7 +42,7 @@ export async function adminRegister(user, token) {
     authorization: token,
   };
   const isCreated = await axios.post(
-    'http://localhost:3001/admin/manage',
+    '/admin/manage',
     user,
     {
       headers,
@@ -63,7 +59,7 @@ export async function getAllUsers(token) {
     authorization: token,
   };
   const allUsers = await axios.get(
-    'http://localhost:3001/admin/manage',
+    ADMIN_MANAGE_ROUTE,
     {
       headers,
     },
@@ -79,7 +75,7 @@ export async function deleteById(id, token) {
     authorization: token,
   };
   await axios.delete(
-    `http://localhost:3001/admin/manage/${id}`,
+    `${ADMIN_MANAGE_ROUTE}/${id}`,
     {
       headers,
     },
@@ -94,7 +90,7 @@ export async function customerOrders(token) {
     authorization: token,
   };
   const customerOrder = await axios.get(
-    'http://localhost:3001/customer/orders',
+    CUSTOMER_ORDERS_ROUTE,
     {
       headers,
     },
@@ -104,9 +100,7 @@ export async function customerOrders(token) {
 }
 
 export async function getSellers() {
-  const sellers = await axios.get(
-    'http://localhost:3001/seller',
-  )
+  const sellers = await axios.get('/seller')
     .then((result) => result.data)
     .catch((error) => console.log(error));
   return sellers;
@@ -118,7 +112,7 @@ export async function createSale(sale, token) {
     authorization: token,
   };
   const createdSale = await axios.post(
-    'http://localhost:3001/sales',
+    '/sales',
     sale,
     {
       headers,
@@ -138,7 +132,7 @@ export async function getCustomerOrderById(token, id) {
   };
 
   const sale = await axios.get(
-    `http://localhost:3001/customer/orders/${id}`,
+    `${CUSTOMER_ORDERS_ROUTE}/${id}`,
     {
       headers,
     },
@@ -155,7 +149,7 @@ export async function markAsDelivered(token, id) {
     authorization: token,
   };
   await axios.patch(
-    `http://localhost:3001/seller/orders/delivered/${id}`,
+    `${SELLER_ORDERS_ROUTE}/delivered/${id}`,
     {},
     {
       headers,
@@ -170,7 +164,7 @@ export async function markAsDispatched(token, id) {
     authorization: token,
   };
   await axios.patch(
-    `http://localhost:3001/seller/orders/leave/${id}`,
+    `${SELLER_ORDERS_ROUTE}/leave/${id}`,
     {},
     {
       headers,
@@ -185,7 +179,7 @@ export async function markAsPreparing(token, id) {
     authorization: token,
   };
   await axios.patch(
-    `http://localhost:3001/seller/orders/start/${id}`,
+    `${SELLER_ORDERS_ROUTE}/start/${id}`,
     {},
     {
       headers,
@@ -196,7 +190,7 @@ export async function markAsPreparing(token, id) {
 
 export async function getSellerOrders(token) {
   const sellerOrders = await axios.get(
-    'http://localhost:3001/seller/orders',
+    SELLER_ORDERS_ROUTE,
     { headers: { authorization: token } },
   ).then((result) => result.data).catch((err) => console.log(err));
 
@@ -210,7 +204,7 @@ export async function getSellerOrderById(token, id) {
   };
 
   const allSales = await axios.get(
-    `http://localhost:3001/seller/orders/${id}`,
+    `${SELLER_ORDERS_ROUTE}/${id}`,
     {
       headers,
     },

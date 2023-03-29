@@ -26,7 +26,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.post with proper parameters', () => {  
-        expect(axios.post).toHaveBeenCalledWith('http://localhost:3001/login', { email: user.customer.user.email, password: 'valid_password' });
+        expect(axios.post).toHaveBeenCalledWith('/login', { email: user.customer.user.email, password: 'valid_password' });
       });
 
       it('should return correct user', () => {
@@ -77,7 +77,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.post with proper parameters', () => {  
-        expect(axios.post).toHaveBeenCalledWith('http://localhost:3001/register', { name: user.customer.user.name, email: user.customer.user.email, password: 'valid_password' });
+        expect(axios.post).toHaveBeenCalledWith('/register', { name: user.customer.user.name, email: user.customer.user.email, password: 'valid_password' });
       });
 
       it('should return correct user', () => {
@@ -128,7 +128,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/customer/products');
+        expect(axios.get).toHaveBeenCalledWith('/customer/products');
       });
 
       it('should return an array', () => {
@@ -179,7 +179,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.post with proper parameters', () => {  
-        expect(axios.post).toHaveBeenCalledWith('http://localhost:3001/admin/manage', { ...user.customer, token: undefined }, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.post).toHaveBeenCalledWith('/admin/manage', { ...user.customer, token: undefined }, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return false', () => {
@@ -230,7 +230,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/admin/manage', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.get).toHaveBeenCalledWith('/admin/manage', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return an array', () => {
@@ -281,7 +281,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.delete with proper parameters', () => {  
-        expect(axios.delete).toHaveBeenCalledWith('http://localhost:3001/admin/manage/2', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.delete).toHaveBeenCalledWith('/admin/manage/2', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return undefined', () => {
@@ -332,7 +332,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/customer/orders', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.get).toHaveBeenCalledWith('/customer/orders', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return orders array', () => {
@@ -383,7 +383,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/customer/orders/4', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.get).toHaveBeenCalledWith('/customer/orders/4', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return order', () => {
@@ -434,7 +434,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/seller');
+        expect(axios.get).toHaveBeenCalledWith('/seller');
       });
 
       it('should return array of sellers', () => {
@@ -485,7 +485,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.post with proper parameters', () => {  
-        expect(axios.post).toHaveBeenCalledWith('http://localhost:3001/sales', orders.orderToBeCreated, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.post).toHaveBeenCalledWith('/sales', orders.orderToBeCreated, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return info about created sale', () => {
@@ -534,7 +534,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.patch with proper parameters', () => {  
-        expect(axios.patch).toHaveBeenCalledWith('http://localhost:3001/seller/orders/delivered/2', {}, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.patch).toHaveBeenCalledWith('/seller/orders/delivered/2', {}, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
     });
 
@@ -573,7 +573,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.patch with proper parameters', () => {  
-        expect(axios.patch).toHaveBeenCalledWith('http://localhost:3001/seller/orders/leave/2', {}, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.patch).toHaveBeenCalledWith('/seller/orders/leave/2', {}, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
     });
 
@@ -612,7 +612,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.patch with proper parameters', () => {  
-        expect(axios.patch).toHaveBeenCalledWith('http://localhost:3001/seller/orders/start/2', {}, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.patch).toHaveBeenCalledWith('/seller/orders/start/2', {}, { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
     });
 
@@ -653,7 +653,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/seller/orders', { headers: { authorization: 'valid_token' } });
+        expect(axios.get).toHaveBeenCalledWith('/seller/orders', { headers: { authorization: 'valid_token' } });
       });
 
       it('should return orders array', () => {
@@ -704,7 +704,7 @@ describe('service functions', () => {
       });
   
       it('should call axios.get with proper parameters', () => {  
-        expect(axios.get).toHaveBeenCalledWith('http://localhost:3001/seller/orders/4', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
+        expect(axios.get).toHaveBeenCalledWith('/seller/orders/4', { headers: { 'Content-Type': 'application/json', authorization: 'valid_token' } });
       });
 
       it('should return order', () => {
