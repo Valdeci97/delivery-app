@@ -37,9 +37,4 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
     volumes:
       - ./my-db:/var/lib/mysql
-  adminer:
-    image: adminer:4.8.1-standalone
-    container_name: database_connector
-    restart: always
-    ports:
-      - 8080:8080
+
