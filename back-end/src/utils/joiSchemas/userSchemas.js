@@ -24,7 +24,7 @@ const passwordSchema = joi.object({
 });
 
 const nameSchema = joi.object({
-  name: joi.string().min(12).required().messages({
+  name: joi.string().min(3).required().messages({
     'any.required': NAME_FIELD,
     'string.empty': NAME_FIELD,
     'string.min': INCORRECT_NAME,
