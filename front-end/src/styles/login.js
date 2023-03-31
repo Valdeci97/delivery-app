@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  /* background-color: #5213A4; // 8,2 p2 */
-  /* background-color: #7D4F7D; // 7,8 p1 */
-  /* background-color: #081F20; // 9,0 p3 */
-  /* background-color: #BB97D8; // 4,2 p1+ */
-  /* background-color: #9E6BC7; //  p1+ */
   display: flex;
   height: 80vh;
   justify-content: space-evenly;

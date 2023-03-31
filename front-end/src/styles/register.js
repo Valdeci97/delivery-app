@@ -20,17 +20,7 @@ export const RegisterForm = styled.form`
   justify-content: center;
   width: 30%;
 
-  @media screen and (max-width: 359px) {
-    height: 100%;
-    width: 80%;
-  }
-
-  @media screen and (min-width: 360px) and (max-width: 440px) {
-    height: 70%;
-    width: 80%;
-  }
-
-  @media screen and (min-width: 441px) and (max-width: 540px) {
+  @media screen and (max-width: 540px) {
     height: 75%;
     width: 80%;
   }
@@ -123,20 +113,4 @@ export const RoleOption = styled.option`
   @media screen and (max-width: 440px) {
     font-size: 1.5rem;
   }
-`;
-
-export const Pass = styled.button`
-  background-color: transparent;
-  border: none;
-  position: absolute;
-  right: 18%;
-  transform: translate(50%, 15%);
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-export const PassIcon = styled.img`
-  width: 2.75rem;
 `;
