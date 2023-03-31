@@ -14,7 +14,7 @@ import beer from '../assets/beer.svg';
 import { loginProps } from '../utils/constants/props';
 import PasswordInput from './PasswordInput';
 import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
-import { validateEmail } from '../utils/helpers/validateFormField';
+import validate from '../utils/helpers/validateFormField';
 
 export default function LoginForm() {
   const [state, setState] = useState(loginFormInitialValue);
@@ -35,8 +35,8 @@ export default function LoginForm() {
   }
 
   function checkFields() {
-    const email = checkInvalidFields(state.email, validateEmail, 'e-mail');
-    const password = checkInvalidFields(state.password);
+    const email = checkInvalidFields(state.email, 'e-mail', validate.emailField);
+    const password = checkInvalidFields(state.password, 'senha');
     const message = email.message || password.message;
     return { message };
   }

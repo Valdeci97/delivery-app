@@ -12,7 +12,7 @@ import PasswordInput from './PasswordInput';
 import { registerProps, roleProps } from '../utils/constants/props';
 import RoleInput from './RoleInput';
 import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
-import { validateEmail, validatePassword } from '../utils/helpers/validateFormField';
+import validate from '../utils/helpers/validateFormField';
 import { toastResponse } from '../utils/toast';
 import ToastMessage from '../utils/helpers/toastifyMessage';
 
@@ -21,15 +21,11 @@ export default function AdminRegisterForm({ update }) {
   const { theme } = useContext(AppContext);
   const isDarkMode = theme === 'dark';
 
-  const MIN_NAME_LENGTH = 3;
-
   const checkFields = () => {
-    if (state.name.length < MIN_NAME_LENGTH) {
-      return { message: 'Preencha todos os campos' };
-    }
-    const email = checkInvalidFields(state.email, validateEmail, 'e-mail');
-    const password = checkInvalidFields(state.password);
-    const message = email.message || password.message;
+    const name = checkInvalidFields(state.name, 'nome', validate.nameField);
+    const email = checkInvalidFields(state.email, 'e-mail', validate.emailField);
+    const password = checkInvalidFields(state.password, 'senha');
+    const message = name.message || email.message || password.message;
     return { message };
   };
 
@@ -41,7 +37,7 @@ export default function AdminRegisterForm({ update }) {
       return response();
     }
 
-    if (validatePassword(state.password)) {
+    if (validate.passwordField(state.password)) {
       const { response } = toastResponse(<ToastMessage />, toastTheme);
       return response();
     }
