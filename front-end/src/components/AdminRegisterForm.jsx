@@ -8,7 +8,7 @@ import {
 } from '../utils/constants/adminRegisterFormInitialValue';
 import AppContext from '../context/AppContext';
 import Input from './Input';
-import RegisterPasswordInput from './RegisterPasswordInput';
+import PasswordInput from './PasswordInput';
 import { registerProps, roleProps } from '../utils/constants/props';
 import RoleInput from './RoleInput';
 import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
@@ -81,7 +81,7 @@ export default function AdminRegisterForm({ update }) {
           stateHandler={ setState }
           value={ state.email }
         />
-        <RegisterPasswordInput
+        <PasswordInput
           static={ registerProps.passwordInput }
           prevState={ state }
           stateHandler={ setState }

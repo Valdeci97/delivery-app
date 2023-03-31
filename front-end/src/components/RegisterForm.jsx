@@ -10,7 +10,7 @@ import * as S from '../styles/register';
 import proto from '../assets/register.svg';
 import { registerProps, roleProps } from '../utils/constants/props';
 import Input from './Input';
-import RegisterPasswordInput from './RegisterPasswordInput';
+import PasswordInput from './PasswordInput';
 import RoleInput from './RoleInput';
 import { validatePassword, validateEmail } from '../utils/helpers/validateFormField';
 import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
@@ -84,7 +84,7 @@ export default function RegisterForm() {
           stateHandler={ setState }
           value={ state.email }
         />
-        <RegisterPasswordInput
+        <PasswordInput
           static={ registerProps.passwordInput }
           prevState={ state }
           stateHandler={ setState }

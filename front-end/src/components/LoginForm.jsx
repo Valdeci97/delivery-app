@@ -12,7 +12,7 @@ import AppContext from '../context/AppContext';
 import * as S from '../styles/login';
 import beer from '../assets/beer.svg';
 import { loginProps } from '../utils/constants/props';
-import LoginPasswordInput from './LoginPasswordInput';
+import PasswordInput from './PasswordInput';
 import { checkInvalidFields } from '../utils/helpers/checkInvalidFields';
 import { validateEmail } from '../utils/helpers/validateFormField';
 
@@ -76,7 +76,7 @@ export default function LoginForm() {
           stateHandler={ setState }
           value={ state.email }
         />
-        <LoginPasswordInput
+        <PasswordInput
           static={ loginProps.passwordInput }
           prevState={ state }
           stateHandler={ setState }
