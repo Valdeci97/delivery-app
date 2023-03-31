@@ -8,7 +8,9 @@ export default function Input(props) {
     <S.Label htmlFor={ props.static.id }>
       { props.static.title }
       <S.InputContainer>
-        <S.InputIcon src={ props.static.src } alt={ props.static.alt } />
+        <S.InputIconContainer>
+          <S.InputIcon src={ props.static.src } alt={ props.static.alt } />
+        </S.InputIconContainer>
         <S.Input
           data-testid="common_login__input-email"
           id={ props.static.id }

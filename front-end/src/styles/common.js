@@ -53,28 +53,26 @@ export const InputContainer = styled.div`
   width: 100%;
 `;
 
+export const InputIconContainer = styled.div`
+  background: #ffffff30;
+  display: flex;
+  width: 10%;
+`;
+
 export const InputIcon = styled.img`
-  background-color: #ffffff30;
-  width: 5%;
-
-  @media screen and (max-width: 440px) {
-    width: 7.5%;
-  }
-
-  @media screen and (min-width: 701px) and (max-width: 1000px) {
-    width: 7.5%;
-  }
+  width: 90%;
 `;
 
 export const Input = styled.input`
   background-color: #ffffff30;
   border: none;
   color: #fff;
+  display: flex;
   font-size: 1.5rem;
   font-weight: bold;
   height: 4rem;
   padding: 1rem;
-  width: 95%;
+  width: 90%;
 
   &::placeholder {
     color: #fff;
@@ -84,7 +82,6 @@ export const Input = styled.input`
   }
 
   @media screen and (max-width: 440px) {
-    width: 92.5%;
     font-size: 1rem;
 
     &::placeholder {
@@ -102,10 +99,26 @@ export const Input = styled.input`
 
   @media screen and (min-width: 701px) and (max-width: 1000px) {
     font-size: 1.5rem;
-    width: 92.5%;
 
     &&::placeholder {
       font-size: 1.5rem;
     }
   }
+`;
+
+export const Pass = styled.button`
+  align-self: center;
+  background-color: #ffffff30;
+  border: none;
+  height: 4rem;
+  width: 10%;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const PassIcon = styled.img`
+  height: 100%;
+  width: 90%;
 `;
