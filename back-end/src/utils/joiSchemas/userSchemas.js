@@ -3,9 +3,9 @@ const joi = require('joi');
 const NAME_FIELD = '400/Name must be filled';
 const EMAIL_FIELD = '400/Email must be filled';
 const PASSWORD_FIELD = '400/Password must be filled';
-const INCORRECT_NAME = '400/Name must have more than 12 characters';
+const INCORRECT_NAME = '400/Name must have more than 3 characters';
 const INCORRECT_EMAIL = '400/Email must follow the pattern test@test.com';
-const INCORRECT_PASSWORD = '400/Password must have more than 6 characters';
+const INCORRECT_PASSWORD = '400/Password must have more than 8 characters';
 
 const emailSchema = joi.object({
   email: joi.string().email().required().messages({
@@ -16,7 +16,7 @@ const emailSchema = joi.object({
 });
 
 const passwordSchema = joi.object({
-  password: joi.string().min(6).required().messages({
+  password: joi.string().min(8).required().messages({
     'any.required': PASSWORD_FIELD,
     'string.empty': PASSWORD_FIELD,
     'string.min': INCORRECT_PASSWORD,
