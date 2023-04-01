@@ -13,6 +13,18 @@ services:
       - backend
     stdin_open: true
     tty: true
+  # nginx_front: # Usado para ambiente de produção, mais rápido e otimizado, não inclui dependências de desenvolvimento.
+  #   container_name: delivery_app_frontend_nginx
+  #   build:
+  #     context: ./front-end
+  #     dockerfile: Dockerfile.prod
+  #   ports:
+  #     - 8000:80
+  #   volumes:
+  #     - ./front-end:/home/node/app
+  #     - /home/node/app/node_modules
+  #   depends_on:
+  #     - backend
   backend:
     container_name: delivery_app_api
     build: ./back-end
